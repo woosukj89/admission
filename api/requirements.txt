@@ -1,0 +1,13 @@
+# Vercel deployment dependencies only (API runtime)
+# Full dev dependencies (data pipeline, crawlers, CLI) are in requirements.txt
+fastapi>=0.115.0
+google-genai>=1.0
+python-jose[cryptography]>=3.3
+anthropic>=0.30
+sse-starlette>=1.6
+python-dotenv>=1.0
+pydantic>=2.0
+pydantic-settings>=2.0
+aiofiles>=24.0
+bcrypt
+psycopg2-binary

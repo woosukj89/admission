@@ -24,7 +24,8 @@ class AdmissionStore:
 
     def __init__(self, db_path: Path | str | None = None):
         self.db_path = Path(db_path) if db_path else settings.db_path
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        if not is_postgres:
+            self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._init_db()
 
     @contextmanager
