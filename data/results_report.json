@@ -1,0 +1,2214 @@
+[
+  {
+    "name": "가야대학교",
+    "code": "0002748",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "가천대학교",
+    "code": "0000063",
+    "cdn_files": [
+      "가천대학교_2025학년도_수시입시결과.pdf",
+      "가천대학교_2024학년도_수시입시결과.pdf",
+      "가천대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 3,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 3
+  },
+  {
+    "name": "가톨릭관동대학교",
+    "code": "0000072",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "2024학년도 입시결과_240602.pdf"
+    ],
+    "google_count": 0,
+    "scrape_count": 1,
+    "total_count": 1
+  },
+  {
+    "name": "가톨릭꽃동네대학교",
+    "code": "0000215",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "가톨릭대학교",
+    "code": "0000046",
+    "cdn_files": [
+      "가톨릭대학교_2025학년도_수시입시결과.pdf",
+      "가톨릭대학교_2025학년도_정시입시결과.pdf",
+      "가톨릭대학교_2024학년도_수시입시결과.pdf",
+      "가톨릭대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "감리교신학대학교",
+    "code": "0000050",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "2023학년도 수시모집 경쟁률 및 학생부 성적.jpg",
+      "학생부 평균 등급_2022_수시.jpg"
+    ],
+    "google_count": 0,
+    "scrape_count": 2,
+    "total_count": 2
+  },
+  {
+    "name": "강남대학교",
+    "code": "0000051",
+    "cdn_files": [
+      "강남대학교_2025학년도_수시입시결과.pdf",
+      "강남대학교_2025학년도_정시입시결과.pdf",
+      "강남대학교_2024학년도_수시입시결과.pdf",
+      "강남대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "강서대학교",
+    "code": "0000079",
+    "cdn_files": [
+      "강서대학교_2024학년도_수시입시결과.pdf",
+      "강서대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 2,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 2
+  },
+  {
+    "name": "강원대학교",
+    "code": "0000003",
+    "cdn_files": [
+      "강원대학교_2025학년도_수시입시결과.pdf",
+      "강원대학교_2025학년도_정시입시결과.pdf",
+      "강원대학교_2024학년도_수시입시결과.pdf",
+      "강원대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "건국대학교",
+    "code": "0000052",
+    "cdn_files": [
+      "건국대학교_2025학년도_수시입시결과.pdf",
+      "건국대학교_2025학년도_정시입시결과.pdf",
+      "건국대학교_2024학년도_수시입시결과.pdf",
+      "건국대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "건국대학교(글로컬)",
+    "code": "0000053",
+    "cdn_files": [
+      "건국대학교(글로컬)_2025학년도_수시입시결과.pdf",
+      "건국대학교(글로컬)_2025학년도_정시입시결과.pdf",
+      "건국대학교(글로컬)_2024학년도_수시입시결과.pdf",
+      "건국대학교(글로컬)_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "건양대학교",
+    "code": "0000054",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "경기대학교",
+    "code": "0000056",
+    "cdn_files": [
+      "경기대학교_2024학년도_수시입시결과.pdf",
+      "경기대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 2,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 2
+  },
+  {
+    "name": "경남대학교",
+    "code": "0000059",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "경동대학교",
+    "code": "0000060",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "2026-0055+정보통신접근성+품질인증서-경동대학교+입학안내.pdf"
+    ],
+    "google_count": 0,
+    "scrape_count": 1,
+    "total_count": 1
+  },
+  {
+    "name": "경북대학교",
+    "code": "0000005",
+    "cdn_files": [
+      "경북대학교_2025학년도_수시입시결과.pdf",
+      "경북대학교_2025학년도_정시입시결과.pdf",
+      "경북대학교_2024학년도_수시입시결과.pdf",
+      "경북대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "경상국립대학교",
+    "code": "0000007",
+    "cdn_files": [
+      "경상국립대학교_2025학년도_수시입시결과.pdf",
+      "경상국립대학교_2025학년도_정시입시결과.pdf",
+      "경상국립대학교_2024학년도_수시입시결과.pdf",
+      "경상국립대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "경성대학교",
+    "code": "0000062",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "tBmbYnx46KKnvaQo.JPG"
+    ],
+    "google_count": 0,
+    "scrape_count": 1,
+    "total_count": 1
+  },
+  {
+    "name": "경운대학교",
+    "code": "0000244",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "경인교육대학교",
+    "code": "0000256",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "2021학년도+신입학+전형+선발+통계+및+입시+결과.pdf"
+    ],
+    "google_count": 0,
+    "scrape_count": 1,
+    "total_count": 1
+  },
+  {
+    "name": "경일대학교",
+    "code": "0000064",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "경희대학교",
+    "code": "0000066",
+    "cdn_files": [
+      "경희대학교_2025학년도_수시입시결과.pdf",
+      "경희대학교_2025학년도_정시입시결과.pdf",
+      "경희대학교_2024학년도_수시입시결과.pdf",
+      "경희대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "계명대학교",
+    "code": "0000068",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "고려대학교",
+    "code": "0000069",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "고려대학교(세종)",
+    "code": "0000070",
+    "cdn_files": [
+      "고려대학교(세종)_2024학년도_수시입시결과.pdf",
+      "고려대학교(세종)_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 2,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 2
+  },
+  {
+    "name": "고신대학교",
+    "code": "0000071",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "공주교육대학교",
+    "code": "0000251",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "2023-2025+입학성적+결과집_온라인용.pdf"
+    ],
+    "google_count": 0,
+    "scrape_count": 1,
+    "total_count": 1
+  },
+  {
+    "name": "광신대학교",
+    "code": "0000073",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "광운대학교",
+    "code": "0000074",
+    "cdn_files": [
+      "광운대학교_2025학년도_수시입시결과.pdf",
+      "광운대학교_2025학년도_정시입시결과.pdf",
+      "광운대학교_2024학년도_수시입시결과.pdf",
+      "광운대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "광주가톨릭대학교",
+    "code": "0000075",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "광주대.png"
+    ],
+    "google_count": 0,
+    "scrape_count": 1,
+    "total_count": 1
+  },
+  {
+    "name": "광주교육대학교",
+    "code": "0000252",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "광주대.png"
+    ],
+    "google_count": 0,
+    "scrape_count": 1,
+    "total_count": 1
+  },
+  {
+    "name": "광주대학교",
+    "code": "0000231",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "광주대.png"
+    ],
+    "google_count": 0,
+    "scrape_count": 1,
+    "total_count": 1
+  },
+  {
+    "name": "광주여자대학교",
+    "code": "0000076",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "광주대.png"
+    ],
+    "google_count": 0,
+    "scrape_count": 1,
+    "total_count": 1
+  },
+  {
+    "name": "국립강릉원주대학교",
+    "code": "0000001",
+    "cdn_files": [
+      "국립강릉원주대학교_2025학년도_수시입시결과.pdf",
+      "국립강릉원주대학교_2025학년도_정시입시결과.pdf",
+      "국립강릉원주대학교_2024학년도_수시입시결과.pdf",
+      "국립강릉원주대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "국립경국대학교",
+    "code": "0000021",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "국립공주대학교",
+    "code": "0000008",
+    "cdn_files": [
+      "국립공주대학교_2025학년도_수시입시결과.pdf",
+      "국립공주대학교_2025학년도_정시입시결과.pdf",
+      "국립공주대학교_2024학년도_수시입시결과.pdf",
+      "국립공주대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "국립군산대학교",
+    "code": "0000009",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "국립금오공과대학교",
+    "code": "0000010",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "국립목포대학교",
+    "code": "0000011",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "국립목포해양대학교",
+    "code": "0000012",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "c93a676ee9d9421f85fa837e5ae79be4.pdf"
+    ],
+    "google_count": 0,
+    "scrape_count": 1,
+    "total_count": 1
+  },
+  {
+    "name": "국립부경대학교",
+    "code": "0000013",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "국립순천대학교",
+    "code": "0000020",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "2025학년도 신입학 모집결과_성적분포- 게시용.xlsx",
+      "2024학년도 신입학 모집결과_성적분포 - 게시용.xlsx"
+    ],
+    "google_count": 0,
+    "scrape_count": 2,
+    "total_count": 2
+  },
+  {
+    "name": "국립창원대학교",
+    "code": "0000028",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "국립한국교통대학교",
+    "code": "0000034",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "국립한국해양대학교",
+    "code": "0000033",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "국립한밭대학교",
+    "code": "0000039",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "(붙임) 2025학년도 수시모집 및 정시모집 전형별 입시결과.xlsx",
+      "2024학년도 수시모집 및 정시모집 전형별 입시결과.xlsx",
+      "2023학년도 입시결과 안내자료_실기(일반), 실기우수자전형.pdf",
+      "2022학년도 입시결과 안내자료_실기(일반),실기우수자전형.pdf"
+    ],
+    "google_count": 0,
+    "scrape_count": 4,
+    "total_count": 4
+  },
+  {
+    "name": "국민대학교",
+    "code": "0000078",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "극동대학교",
+    "code": "0000080",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "극동대학교_2026학년도 수시 점수산출기.xlsx"
+    ],
+    "google_count": 0,
+    "scrape_count": 1,
+    "total_count": 1
+  },
+  {
+    "name": "금강대학교",
+    "code": "0000224",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "김천대학교",
+    "code": "0000241",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "나사렛대학교",
+    "code": "0000081",
+    "cdn_files": [
+      "나사렛대학교_2025학년도_수시입시결과.pdf",
+      "나사렛대학교_2025학년도_정시입시결과.pdf",
+      "나사렛대학교_2024학년도_수시입시결과.pdf",
+      "나사렛대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "남부대학교",
+    "code": "0000216",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "남서울대학교",
+    "code": "0000245",
+    "cdn_files": [
+      "남서울대학교_2025학년도_수시입시결과.pdf",
+      "남서울대학교_2025학년도_정시입시결과.pdf",
+      "남서울대학교_2024학년도_수시입시결과.pdf",
+      "남서울대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "단국대학교",
+    "code": "0000082",
+    "cdn_files": [
+      "단국대학교(죽전)_2025학년도_수시입시결과.pdf",
+      "단국대학교(죽전)_2025학년도_정시입시결과.pdf",
+      "단국대학교(죽전)_2024학년도_수시입시결과.pdf",
+      "단국대학교(죽전)_2024학년도_정시입시결과.pdf",
+      "단국대학교(천안)_2025학년도_수시입시결과.pdf",
+      "단국대학교(천안)_2025학년도_정시입시결과.pdf",
+      "단국대학교(천안)_2024학년도_수시입시결과.pdf",
+      "단국대학교(천안)_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 8,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 8
+  },
+  {
+    "name": "대구가톨릭대학교",
+    "code": "0000088",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "대구교육대학교",
+    "code": "0000253",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "대구대학교",
+    "code": "0000084",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "대구예술대학교",
+    "code": "0000087",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "대구한의대학교",
+    "code": "0000061",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "2025ÇÐ³âµµ ½ÅÀÔÇÐ ÀÔ½Ã°á°ú(¼ö½Ã¾÷·Îµå¿ë).pdf",
+      "2025ÇÐ³âµµ ½ÅÀÔÇÐ ÀÔ½Ã°á°ú(¼ö½Ã).xlsx",
+      "2024ÇÐ³âµµ ´ë±¸ÇÑÀÇ´ëÇÐ±³ ¼ö½Ã¸ðÁý ÀÔ½Ã°á°ú(¾÷·Îµå¿ë).xlsx",
+      "2024ÇÐ³âµµ ´ë±¸ÇÑÀÇ´ëÇÐ±³ ¼ö½Ã¸ðÁý ÀÔ½Ã°á°ú(¾÷·Îµå¿ë).pdf",
+      "2023ÇÐ³âµµ ¼ö½Ã¸ðÁý ÀÔ½Ã¼ºÀûÇöÈ²(°øÁö¿ë).pdf",
+      "2023ÇÐ³âµµ ¼ö½Ã¸ðÁý ÀÔ½Ã¼ºÀûÇöÈ²(°øÁö¿ë).xlsx"
+    ],
+    "google_count": 0,
+    "scrape_count": 6,
+    "total_count": 6
+  },
+  {
+    "name": "대신대학교",
+    "code": "0000093",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "대전가톨릭대학교",
+    "code": "0000094",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "대전대학교",
+    "code": "0000095",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "대전신학대학교",
+    "code": "0000238",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "대진대학교",
+    "code": "0000097",
+    "cdn_files": [
+      "대진대학교_2025학년도_수시입시결과.pdf",
+      "대진대학교_2024학년도_수시입시결과.pdf",
+      "대진대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 3,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 3
+  },
+  {
+    "name": "덕성여자대학교",
+    "code": "0000099",
+    "cdn_files": [
+      "덕성여자대학교_2025학년도_수시입시결과.pdf",
+      "덕성여자대학교_2024학년도_수시입시결과.pdf",
+      "덕성여자대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 3,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 3
+  },
+  {
+    "name": "동국대학교",
+    "code": "0000100",
+    "cdn_files": [
+      "동국대학교_2025학년도_수시입시결과.pdf",
+      "동국대학교_2025학년도_정시입시결과.pdf",
+      "동국대학교_2024학년도_수시입시결과.pdf",
+      "동국대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "동국대학교(WISE)",
+    "code": "0000101",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "동덕여자대학교",
+    "code": "0000102",
+    "cdn_files": [
+      "동덕여자대학교_2025학년도_수시입시결과.pdf",
+      "동덕여자대학교_2025학년도_정시입시결과.pdf",
+      "동덕여자대학교_2024학년도_수시입시결과.pdf",
+      "동덕여자대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "동명대학교",
+    "code": "0000235",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "동서대학교",
+    "code": "0000103",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "동신대학교",
+    "code": "0000104",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "4e6cd10ae29d14caaa0b2a9352a2c017.pdf"
+    ],
+    "google_count": 0,
+    "scrape_count": 1,
+    "total_count": 1
+  },
+  {
+    "name": "동아대학교",
+    "code": "0000105",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "동양대학교",
+    "code": "0000106",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "동의대학교",
+    "code": "0000107",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "2025학년도 수시모집 학생부종합 전형결과(동의대).pdf",
+      "2025학년도 수시모집 학생부교과, 실기실적 전형결과(동의대).pdf",
+      "2024학년도_수시_전형결과(동의대-학생부교과전형, 실기실적위주전형).pdf",
+      "2024학년도_수시_전형결과(동의대-학생부종합전형).pdf"
+    ],
+    "google_count": 0,
+    "scrape_count": 4,
+    "total_count": 4
+  },
+  {
+    "name": "루터대학교",
+    "code": "0000108",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "명지대학교",
+    "code": "0000109",
+    "cdn_files": [
+      "명지대학교_2025학년도_수시입시결과.pdf",
+      "명지대학교_2025학년도_정시입시결과.pdf",
+      "명지대학교_2024학년도_수시입시결과.pdf"
+    ],
+    "cdn_count": 3,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 3
+  },
+  {
+    "name": "목원대학교",
+    "code": "0000112",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "목포가톨릭대학교",
+    "code": "0000221",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "배재대학교",
+    "code": "0000113",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "2026_major_introduce_1.pdf"
+    ],
+    "google_count": 0,
+    "scrape_count": 1,
+    "total_count": 1
+  },
+  {
+    "name": "백석대학교",
+    "code": "0000178",
+    "cdn_files": [
+      "백석대학교_2025학년도_수시입시결과.pdf",
+      "백석대학교_2024학년도_수시입시결과.pdf",
+      "백석대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 3,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 3
+  },
+  {
+    "name": "부산가톨릭대학교",
+    "code": "0000114",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "2025학년도 수시모집 학생부교과전형 입시결과.pdf",
+      "2025학년도 수시모집 학생부교과전형 입시결과.pdf"
+    ],
+    "google_count": 0,
+    "scrape_count": 2,
+    "total_count": 2
+  },
+  {
+    "name": "부산교육대학교",
+    "code": "0000254",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "부산대학교",
+    "code": "0000014",
+    "cdn_files": [
+      "부산대학교_2024학년도_수시입시결과.pdf",
+      "부산대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 2,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 2
+  },
+  {
+    "name": "부산외국어대학교",
+    "code": "0000115",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "부산장신대학교",
+    "code": "0000222",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "삼육대학교",
+    "code": "0000116",
+    "cdn_files": [
+      "삼육대학교_2025학년도_수시입시결과.pdf",
+      "삼육대학교_2025학년도_정시입시결과.pdf",
+      "삼육대학교_2024학년도_수시입시결과.pdf",
+      "삼육대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "상명대학교",
+    "code": "0000117",
+    "cdn_files": [
+      "상명대학교_2025학년도_수시입시결과.pdf",
+      "상명대학교_2025학년도_정시입시결과.pdf",
+      "상명대학교_2024학년도_수시입시결과.pdf",
+      "상명대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "상지대학교",
+    "code": "0000119",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "서강대학교",
+    "code": "0000120",
+    "cdn_files": [
+      "서강대학교_2025학년도_수시입시결과.pdf",
+      "서강대학교_2025학년도_정시입시결과.pdf",
+      "서강대학교_2024학년도_수시입시결과.pdf",
+      "서강대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "서경대학교",
+    "code": "0000121",
+    "cdn_files": [
+      "서경대학교_2025학년도_수시입시결과.pdf",
+      "서경대학교_2025학년도_정시입시결과.pdf",
+      "서경대학교_2024학년도_수시입시결과.pdf",
+      "서경대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "서울과학기술대학교",
+    "code": "0000036",
+    "cdn_files": [
+      "서울과학기술대학교_2025학년도_수시입시결과.pdf",
+      "서울과학기술대학교_2025학년도_정시입시결과.pdf",
+      "서울과학기술대학교_2024학년도_수시입시결과.pdf",
+      "서울과학기술대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "서울교육대학교",
+    "code": "0000255",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "서울기독대학교",
+    "code": "0000098",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "서울대학교",
+    "code": "0000019",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "서울시립대학교",
+    "code": "0000040",
+    "cdn_files": [
+      "서울시립대학교_2024학년도_수시입시결과.pdf",
+      "서울시립대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 2,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 2
+  },
+  {
+    "name": "서울신학대학교",
+    "code": "0000125",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "서울여자대학교",
+    "code": "0000126",
+    "cdn_files": [
+      "서울여자대학교_2025학년도_수시입시결과.pdf",
+      "서울여자대학교_2025학년도_정시입시결과.pdf",
+      "서울여자대학교_2024학년도_수시입시결과.pdf",
+      "서울여자대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "서울장신대학교",
+    "code": "0000127",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "서울한영대학교",
+    "code": "0000205",
+    "cdn_files": [
+      "서울한영대학교_2025학년도_수시입시결과.pdf",
+      "서울한영대학교_2025학년도_정시입시결과.pdf",
+      "서울한영대학교_2024학년도_수시입시결과.pdf",
+      "서울한영대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "서원대학교",
+    "code": "0000128",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "2025학년도 신입학 수시모집 전형결과(70%CUT).pdf",
+      "2024학년도 정시모집 전형결과.pdf",
+      "2025학년도 신입학 정시모집 전형결과(70%CUT).pdf"
+    ],
+    "google_count": 0,
+    "scrape_count": 3,
+    "total_count": 3
+  },
+  {
+    "name": "선문대학교",
+    "code": "0000129",
+    "cdn_files": [
+      "선문대학교_2025학년도_수시입시결과.pdf",
+      "선문대학교_2024학년도_수시입시결과.pdf",
+      "선문대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 3,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 3
+  },
+  {
+    "name": "성결대학교",
+    "code": "0000131",
+    "cdn_files": [
+      "성결대학교_2025학년도_수시입시결과.pdf",
+      "성결대학교_2024학년도_수시입시결과.pdf"
+    ],
+    "cdn_count": 2,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 2
+  },
+  {
+    "name": "성공회대학교",
+    "code": "0000132",
+    "cdn_files": [
+      "성공회대학교_2024학년도_수시입시결과.pdf",
+      "성공회대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 2,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 2
+  },
+  {
+    "name": "성균관대학교",
+    "code": "0000133",
+    "cdn_files": [
+      "성균관대학교_2025학년도_수시입시결과.pdf",
+      "성균관대학교_2025학년도_정시입시결과.pdf",
+      "성균관대학교_2024학년도_수시입시결과.pdf",
+      "성균관대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "성신여자대학교",
+    "code": "0000136",
+    "cdn_files": [
+      "성신여자대학교_2025학년도_수시입시결과.pdf",
+      "성신여자대학교_2025학년도_정시입시결과.pdf",
+      "성신여자대학교_2024학년도_수시입시결과.pdf",
+      "성신여자대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "세명대학교",
+    "code": "0000137",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "(세명대) 2025학년도 수시및정시모집 입시결과.xlsx",
+      "세명대_2024학년도 수시 및 정시모집 입시결과(홈페이지 공지용).xlsx",
+      "세명대_2023학년도 수시 및 정시모집 입시결과(홈페이지 공지용).xlsx",
+      "세명대학교_2020학년도 입시결과.pdf",
+      "세명대학교_2019학년도 입시결과.pdf",
+      "세명대학교_전년도(2018) 입학통계자료집_요약.pdf"
+    ],
+    "google_count": 0,
+    "scrape_count": 6,
+    "total_count": 6
+  },
+  {
+    "name": "세종대학교",
+    "code": "0000138",
+    "cdn_files": [
+      "세종대학교_2024학년도_수시입시결과.pdf",
+      "세종대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 2,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 2
+  },
+  {
+    "name": "세한대학교",
+    "code": "0000092",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "2021ipsi_result.pdf"
+    ],
+    "google_count": 0,
+    "scrape_count": 1,
+    "total_count": 1
+  },
+  {
+    "name": "송원대학교",
+    "code": "0000243",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "수원가톨릭대학교",
+    "code": "0000139",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "수원대학교",
+    "code": "0000140",
+    "cdn_files": [
+      "수원대학교_2024학년도_수시입시결과.pdf",
+      "수원대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 2,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 2
+  },
+  {
+    "name": "숙명여자대학교",
+    "code": "0000141",
+    "cdn_files": [
+      "숙명여자대학교_2025학년도_수시입시결과.pdf",
+      "숙명여자대학교_2024학년도_수시입시결과.pdf"
+    ],
+    "cdn_count": 2,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 2
+  },
+  {
+    "name": "순천향대학교",
+    "code": "0000142",
+    "cdn_files": [
+      "순천향대학교_2025학년도_수시입시결과.pdf",
+      "순천향대학교_2025학년도_정시입시결과.pdf",
+      "순천향대학교_2024학년도_수시입시결과.pdf",
+      "순천향대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "숭실대학교",
+    "code": "0000143",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "SSU(1)_250602151849.pdf"
+    ],
+    "google_count": 0,
+    "scrape_count": 1,
+    "total_count": 1
+  },
+  {
+    "name": "신경주대학교",
+    "code": "0000065",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "신라대학교",
+    "code": "0000144",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "신한대학교",
+    "code": "0002712",
+    "cdn_files": [
+      "신한대학교_2024학년도_수시입시결과.pdf",
+      "신한대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 2,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 2
+  },
+  {
+    "name": "아신대학교",
+    "code": "0000145",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "아주대학교",
+    "code": "0000146",
+    "cdn_files": [
+      "아주대학교_2025학년도_수시입시결과.pdf",
+      "아주대학교_2024학년도_수시입시결과.pdf",
+      "아주대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 3,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 3
+  },
+  {
+    "name": "안양대학교",
+    "code": "0000147",
+    "cdn_files": [
+      "안양대학교_2025학년도_수시입시결과.pdf",
+      "안양대학교_2025학년도_정시입시결과.pdf",
+      "안양대학교_2024학년도_수시입시결과.pdf",
+      "안양대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "연세대학교",
+    "code": "0000149",
+    "cdn_files": [
+      "연세대학교_2024학년도_수시입시결과.pdf",
+      "연세대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 2,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 2
+  },
+  {
+    "name": "연세대학교(미래)",
+    "code": "0000150",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "forover.pdf",
+      "sn.pdf"
+    ],
+    "google_count": 0,
+    "scrape_count": 2,
+    "total_count": 2
+  },
+  {
+    "name": "영남대학교",
+    "code": "0000151",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "영남신학대학교",
+    "code": "0000153",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "영산대학교",
+    "code": "0003193",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "영산선학대학교",
+    "code": "0000155",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "예수대학교",
+    "code": "0000228",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "2024ÇÐ³âµµ ½ÅÀÔÇÐ ÀÔ½Ã°á°ú(°øÁö¿ë).pdf"
+    ],
+    "google_count": 0,
+    "scrape_count": 1,
+    "total_count": 1
+  },
+  {
+    "name": "예원예술대학교",
+    "code": "0000218",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "20251103131334_35460.pdf",
+      "2026ÇÐ³âµµ ½ÅÀÔ»ý ¼ö½Ã¸ðÁý Á¢¼ö ÇöÈ²_°æÀï·ü_250912_1900.pdf"
+    ],
+    "google_count": 0,
+    "scrape_count": 2,
+    "total_count": 2
+  },
+  {
+    "name": "용인대학교",
+    "code": "0000156",
+    "cdn_files": [
+      "용인대학교_2025학년도_수시입시결과.pdf",
+      "용인대학교_2025학년도_정시입시결과.pdf",
+      "용인대학교_2024학년도_수시입시결과.pdf",
+      "용인대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "우석대학교",
+    "code": "0000157",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "우송대학교",
+    "code": "0000240",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "2026susi.pdf",
+      "2026jungsi.pdf",
+      "2026trans2.pdf",
+      "우_2025학년도 수시입시결과표_1.jpg",
+      "★2025학년도 수시 정시 정원내외 전체 성적결과표(원본) 업로드.xlsx"
+    ],
+    "google_count": 0,
+    "scrape_count": 5,
+    "total_count": 5
+  },
+  {
+    "name": "울산대학교",
+    "code": "0000158",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "원광대학교",
+    "code": "0000159",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "위덕대학교",
+    "code": "0000160",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "유원대학교",
+    "code": "0000154",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "을지대학교",
+    "code": "0000161",
+    "cdn_files": [
+      "을지대학교_2025학년도_수시입시결과.pdf",
+      "을지대학교_2025학년도_정시입시결과.pdf",
+      "을지대학교_2024학년도_수시입시결과.pdf",
+      "을지대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "이화여자대학교",
+    "code": "0000163",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "인제대학교",
+    "code": "0000164",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "인천가톨릭대학교",
+    "code": "0000168",
+    "cdn_files": [
+      "인천가톨릭대학교_2024학년도_수시입시결과.pdf",
+      "인천가톨릭대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 2,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 2
+  },
+  {
+    "name": "인천대학교",
+    "code": "0002660",
+    "cdn_files": [
+      "인천대학교_2025학년도_정시입시결과.pdf",
+      "인천대학교_2024학년도_수시입시결과.pdf",
+      "인천대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 3,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 3
+  },
+  {
+    "name": "인하대학교",
+    "code": "0000169",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "장로회신학대학교",
+    "code": "0000170",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "전남대학교",
+    "code": "0000023",
+    "cdn_files": [
+      "전남대학교_2025학년도_수시입시결과.pdf",
+      "전남대학교_2025학년도_정시입시결과.pdf",
+      "전남대학교_2024학년도_수시입시결과.pdf",
+      "전남대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "전북대학교",
+    "code": "0000025",
+    "cdn_files": [
+      "전북대학교_2024학년도_수시입시결과.pdf",
+      "전북대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 2,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 2
+  },
+  {
+    "name": "전주교육대학교",
+    "code": "0000258",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "전주대학교",
+    "code": "0000171",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "제주국제대학교",
+    "code": "0000248",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "제주대학교",
+    "code": "0000027",
+    "cdn_files": [
+      "제주대학교_2024학년도_수시입시결과.pdf",
+      "제주대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 2,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 2
+  },
+  {
+    "name": "조선대학교",
+    "code": "0000172",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "중부대학교",
+    "code": "0000173",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "중앙대학교",
+    "code": "0000175",
+    "cdn_files": [
+      "중앙대학교_2025학년도_수시입시결과.pdf",
+      "중앙대학교_2024학년도_수시입시결과.pdf"
+    ],
+    "cdn_count": 2,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 2
+  },
+  {
+    "name": "중앙승가대학교",
+    "code": "0000177",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "중원대학교",
+    "code": "0000239",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "진주교육대학교",
+    "code": "0000260",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "차의과학대학교",
+    "code": "0000187",
+    "cdn_files": [
+      "차의과학대학교_2025학년도_수시입시결과.pdf",
+      "차의과학대학교_2025학년도_정시입시결과.pdf",
+      "차의과학대학교_2024학년도_수시입시결과.pdf",
+      "차의과학대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "창신대학교",
+    "code": "0000249",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "2025학년도 신입생 수시모집 입시결과.pdf",
+      "입시결과_scrape_1.jpg",
+      "2025학년도 신입생 정시모집 입시결과.pdf"
+    ],
+    "google_count": 0,
+    "scrape_count": 3,
+    "total_count": 3
+  },
+  {
+    "name": "청운대학교",
+    "code": "0000284",
+    "cdn_files": [
+      "청운대학교_2025학년도_수시입시결과.pdf",
+      "청운대학교_2025학년도_정시입시결과.pdf",
+      "청운대학교_2024학년도_수시입시결과.pdf",
+      "청운대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "청주교육대학교",
+    "code": "0000261",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "2025학년도 정시모집 최종등록자 모집결과(경쟁률, 충원합격자 포함).pdf",
+      "2025학년도 수시모집 최종등록자 모집결과(경쟁률, 충원합격자 포함).pdf",
+      "2024학년도 정시모집 최종등록자 모집결과(경쟁률,충원합격자 포함).pdf",
+      "2024학년도 수시모집 최종등록자 모집결과(경쟁률,충원합격자 포함.pdf",
+      "2023학년도 정시모집 최종등록자 모집결과(경쟁률,충원합격자 포함).pdf"
+    ],
+    "google_count": 0,
+    "scrape_count": 5,
+    "total_count": 5
+  },
+  {
+    "name": "청주대학교",
+    "code": "0000179",
+    "cdn_files": [
+      "청주대학교_2025학년도_수시입시결과.pdf",
+      "청주대학교_2025학년도_정시입시결과.pdf",
+      "청주대학교_2024학년도_수시입시결과.pdf",
+      "청주대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "초당대학교",
+    "code": "0000246",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "총신대학교",
+    "code": "0000180",
+    "cdn_files": [
+      "총신대학교_2025학년도_정시입시결과.pdf",
+      "총신대학교_2024학년도_수시입시결과.pdf",
+      "총신대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 3,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 3
+  },
+  {
+    "name": "추계예술대학교",
+    "code": "0000181",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "춘천교육대학교",
+    "code": "0000262",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "2025학년도_입학_전형_결과(춘천교대).pdf"
+    ],
+    "google_count": 0,
+    "scrape_count": 1,
+    "total_count": 1
+  },
+  {
+    "name": "충남대학교",
+    "code": "0000029",
+    "cdn_files": [
+      "충남대학교_2025학년도_수시입시결과.pdf",
+      "충남대학교_2025학년도_정시입시결과.pdf",
+      "충남대학교_2024학년도_수시입시결과.pdf",
+      "충남대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "충북대학교",
+    "code": "0000030",
+    "cdn_files": [
+      "충북대학교_2025학년도_수시입시결과.pdf",
+      "충북대학교_2025학년도_정시입시결과.pdf",
+      "충북대학교_2024학년도_수시입시결과.pdf",
+      "충북대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "칼빈대학교",
+    "code": "0000184",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "평택대학교",
+    "code": "0000186",
+    "cdn_files": [
+      "평택대학교_2025학년도_수시입시결과.pdf",
+      "평택대학교_2024학년도_수시입시결과.pdf",
+      "평택대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 3,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 3
+  },
+  {
+    "name": "포항공과대학교",
+    "code": "0000188",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "한경국립대학교",
+    "code": "0000037",
+    "cdn_files": [
+      "한경국립대학교_2025학년도_수시입시결과.pdf",
+      "한경국립대학교_2024학년도_수시입시결과.pdf",
+      "한경국립대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 3,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 3
+  },
+  {
+    "name": "한국공학대학교",
+    "code": "0000247",
+    "cdn_files": [
+      "한국공학대학교_2025학년도_수시입시결과.pdf",
+      "한국공학대학교_2024학년도_수시입시결과.pdf",
+      "한국공학대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 3,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 3
+  },
+  {
+    "name": "한국교원대학교",
+    "code": "0000031",
+    "cdn_files": [
+      "한국교원대학교_2025학년도_수시입시결과.pdf",
+      "한국교원대학교_2025학년도_정시입시결과.pdf",
+      "한국교원대학교_2024학년도_수시입시결과.pdf",
+      "한국교원대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "한국기술교육대학교",
+    "code": "0000189",
+    "cdn_files": [
+      "한국기술교육대학교_2025학년도_수시입시결과.pdf",
+      "한국기술교육대학교_2025학년도_정시입시결과.pdf",
+      "한국기술교육대학교_2024학년도_수시입시결과.pdf",
+      "한국기술교육대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "한국성서대학교",
+    "code": "0000191",
+    "cdn_files": [
+      "한국성서대학교_2024학년도_수시입시결과.pdf",
+      "한국성서대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 2,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 2
+  },
+  {
+    "name": "한국외국어대학교",
+    "code": "0000192",
+    "cdn_files": [
+      "한국외국어대학교_2025학년도_수시입시결과.pdf",
+      "한국외국어대학교_2024학년도_수시입시결과.pdf"
+    ],
+    "cdn_count": 2,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 2
+  },
+  {
+    "name": "한국체육대학교",
+    "code": "0000032",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "한국침례신학대학교",
+    "code": "0000182",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "한국항공대학교",
+    "code": "0000194",
+    "cdn_files": [
+      "한국항공대학교_2025학년도_수시입시결과.pdf",
+      "한국항공대학교_2024학년도_수시입시결과.pdf",
+      "한국항공대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 3,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 3
+  },
+  {
+    "name": "한남대학교",
+    "code": "0000195",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "한동대학교",
+    "code": "0000196",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "한라대학교",
+    "code": "0000197",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "한림대학교",
+    "code": "0000198",
+    "cdn_files": [
+      "한림대학교_2025학년도_수시입시결과.pdf",
+      "한림대학교_2025학년도_정시입시결과.pdf",
+      "한림대학교_2024학년도_수시입시결과.pdf",
+      "한림대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "한서대학교",
+    "code": "0000199",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "scrape_files": [
+      "2025ÇÐ³âµµ(Àü³âµµ)ÃÖÁ¾ ÀÔÇÐÀÚ ¼ºÀû ¹× Ãß°¡ÇÕ°Ý ÇöÈ²(È¨ÆäÀÌÁö).pdf"
+    ],
+    "google_count": 0,
+    "scrape_count": 1,
+    "total_count": 1
+  },
+  {
+    "name": "한성대학교",
+    "code": "0000200",
+    "cdn_files": [
+      "한성대학교_2025학년도_수시입시결과.pdf",
+      "한성대학교_2025학년도_정시입시결과.pdf",
+      "한성대학교_2024학년도_수시입시결과.pdf",
+      "한성대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "한세대학교",
+    "code": "0000201",
+    "cdn_files": [
+      "한세대학교_2025학년도_수시입시결과.pdf",
+      "한세대학교_2024학년도_수시입시결과.pdf",
+      "한세대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 3,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 3
+  },
+  {
+    "name": "한신대학교",
+    "code": "0000202",
+    "cdn_files": [
+      "한신대학교_2025학년도_수시입시결과.pdf",
+      "한신대학교_2025학년도_정시입시결과.pdf",
+      "한신대학교_2024학년도_수시입시결과.pdf",
+      "한신대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "한양대학교",
+    "code": "0000203",
+    "cdn_files": [
+      "한양대학교_2025학년도_수시입시결과.pdf",
+      "한양대학교_2025학년도_정시입시결과.pdf",
+      "한양대학교_2024학년도_수시입시결과.pdf",
+      "한양대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "한양대학교(ERICA)",
+    "code": "0000204",
+    "cdn_files": [
+      "한양대학교(ERICA)_2025학년도_수시입시결과.pdf",
+      "한양대학교(ERICA)_2025학년도_정시입시결과.pdf",
+      "한양대학교(ERICA)_2024학년도_수시입시결과.pdf",
+      "한양대학교(ERICA)_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 4,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 4
+  },
+  {
+    "name": "한일장신대학교",
+    "code": "0000206",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "협성대학교",
+    "code": "0000207",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "호남대학교",
+    "code": "0000208",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "호남신학대학교",
+    "code": "0000209",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "호서대학교",
+    "code": "0000211",
+    "cdn_files": [
+      "호서대학교_2024학년도_수시입시결과.pdf",
+      "호서대학교_2024학년도_정시입시결과.pdf"
+    ],
+    "cdn_count": 2,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 2
+  },
+  {
+    "name": "호원대학교",
+    "code": "0000282",
+    "cdn_files": [],
+    "cdn_count": 0,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 0
+  },
+  {
+    "name": "홍익대학교",
+    "code": "0000212",
+    "cdn_files": [
+      "홍익대학교(세종)_2024학년도_수시입시결과.pdf"
+    ],
+    "cdn_count": 1,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 1
+  },
+  {
+    "name": "화성의과학대학교",
+    "code": "0000233",
+    "cdn_files": [
+      "화성의과학대학교_2024학년도_수시입시결과.pdf"
+    ],
+    "cdn_count": 1,
+    "google_count": 0,
+    "scrape_count": 0,
+    "total_count": 1
+  }
+]

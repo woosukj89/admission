@@ -1,0 +1,394 @@
+[
+  {
+    "name": "서울대학교",
+    "name_en": "Seoul National University",
+    "url": "https://www.snu.ac.kr",
+    "admission_url": "https://admission.snu.ac.kr",
+    "location": "서울",
+    "university_type": "국립"
+  },
+  {
+    "name": "고려대학교",
+    "name_en": "Korea University",
+    "url": "https://www.korea.ac.kr",
+    "admission_url": "https://oku.korea.ac.kr",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "연세대학교",
+    "name_en": "Yonsei University",
+    "url": "https://www.yonsei.ac.kr",
+    "admission_url": "https://admission.yonsei.ac.kr",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "성균관대학교",
+    "name_en": "Sungkyunkwan University",
+    "url": "https://www.skku.edu",
+    "admission_url": "https://admission.skku.edu",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "한양대학교",
+    "name_en": "Hanyang University",
+    "url": "https://www.hanyang.ac.kr",
+    "admission_url": "https://go.hanyang.ac.kr",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "서강대학교",
+    "name_en": "Sogang University",
+    "url": "https://www.sogang.ac.kr",
+    "admission_url": "https://admission.sogang.ac.kr",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "중앙대학교",
+    "name_en": "Chung-Ang University",
+    "url": "https://www.cau.ac.kr",
+    "admission_url": "https://admission.cau.ac.kr",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "경희대학교",
+    "name_en": "Kyung Hee University",
+    "url": "https://www.khu.ac.kr",
+    "admission_url": "https://iphak.khu.ac.kr",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "이화여자대학교",
+    "name_en": "Ewha Womans University",
+    "url": "https://www.ewha.ac.kr",
+    "admission_url": "https://admission.ewha.ac.kr",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "홍익대학교",
+    "name_en": "Hongik University",
+    "url": "https://www.hongik.ac.kr",
+    "admission_url": "https://admission.hongik.ac.kr",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "건국대학교",
+    "name_en": "Konkuk University",
+    "url": "https://www.konkuk.ac.kr",
+    "admission_url": "https://enter.konkuk.ac.kr",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "동국대학교",
+    "name_en": "Dongguk University",
+    "url": "https://www.dongguk.edu",
+    "admission_url": "https://ipsi.dongguk.edu",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "국민대학교",
+    "name_en": "Kookmin University",
+    "url": "https://www.kookmin.ac.kr",
+    "admission_url": "https://admission.kookmin.ac.kr",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "숭실대학교",
+    "name_en": "Soongsil University",
+    "url": "https://www.ssu.ac.kr",
+    "admission_url": "https://admission.ssu.ac.kr",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "세종대학교",
+    "name_en": "Sejong University",
+    "url": "https://www.sejong.ac.kr",
+    "admission_url": "https://ipsi.sejong.ac.kr",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "광운대학교",
+    "name_en": "Kwangwoon University",
+    "url": "https://www.kw.ac.kr",
+    "admission_url": "https://ipsi.kw.ac.kr",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "명지대학교",
+    "name_en": "Myongji University",
+    "url": "https://www.mju.ac.kr",
+    "admission_url": "https://iphak.mju.ac.kr",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "상명대학교",
+    "name_en": "Sangmyung University",
+    "url": "https://www.smu.ac.kr",
+    "admission_url": "https://admission.smu.ac.kr",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "서울시립대학교",
+    "name_en": "University of Seoul",
+    "url": "https://www.uos.ac.kr",
+    "admission_url": "https://ipsi.uos.ac.kr",
+    "location": "서울",
+    "university_type": "공립"
+  },
+  {
+    "name": "서울과학기술대학교",
+    "name_en": "Seoul National University of Science and Technology",
+    "url": "https://www.seoultech.ac.kr",
+    "admission_url": "https://ipsi.seoultech.ac.kr",
+    "location": "서울",
+    "university_type": "국립"
+  },
+  {
+    "name": "KAIST",
+    "name_en": "Korea Advanced Institute of Science and Technology",
+    "url": "https://www.kaist.ac.kr",
+    "admission_url": "https://admission.kaist.ac.kr",
+    "location": "대전",
+    "university_type": "국립"
+  },
+  {
+    "name": "POSTECH",
+    "name_en": "Pohang University of Science and Technology",
+    "url": "https://www.postech.ac.kr",
+    "admission_url": "https://adm-iu.postech.ac.kr",
+    "location": "포항",
+    "university_type": "사립"
+  },
+  {
+    "name": "UNIST",
+    "name_en": "Ulsan National Institute of Science and Technology",
+    "url": "https://www.unist.ac.kr",
+    "admission_url": "https://www.unist.ac.kr/admission",
+    "location": "울산",
+    "university_type": "국립"
+  },
+  {
+    "name": "GIST",
+    "name_en": "Gwangju Institute of Science and Technology",
+    "url": "https://www.gist.ac.kr",
+    "admission_url": "https://admission.gist.ac.kr",
+    "location": "광주",
+    "university_type": "국립"
+  },
+  {
+    "name": "DGIST",
+    "name_en": "Daegu Gyeongbuk Institute of Science and Technology",
+    "url": "https://www.dgist.ac.kr",
+    "admission_url": "https://admission.dgist.ac.kr",
+    "location": "대구",
+    "university_type": "국립"
+  },
+  {
+    "name": "부산대학교",
+    "name_en": "Pusan National University",
+    "url": "https://www.pusan.ac.kr",
+    "admission_url": "https://go.pusan.ac.kr",
+    "location": "부산",
+    "university_type": "국립"
+  },
+  {
+    "name": "경북대학교",
+    "name_en": "Kyungpook National University",
+    "url": "https://www.knu.ac.kr",
+    "admission_url": "https://enter.knu.ac.kr",
+    "location": "대구",
+    "university_type": "국립"
+  },
+  {
+    "name": "전남대학교",
+    "name_en": "Chonnam National University",
+    "url": "https://www.jnu.ac.kr",
+    "admission_url": "https://admission.jnu.ac.kr",
+    "location": "광주",
+    "university_type": "국립"
+  },
+  {
+    "name": "충남대학교",
+    "name_en": "Chungnam National University",
+    "url": "https://www.cnu.ac.kr",
+    "admission_url": "https://ipsi.cnu.ac.kr",
+    "location": "대전",
+    "university_type": "국립"
+  },
+  {
+    "name": "충북대학교",
+    "name_en": "Chungbuk National University",
+    "url": "https://www.chungbuk.ac.kr",
+    "admission_url": "https://ipsi.chungbuk.ac.kr",
+    "location": "청주",
+    "university_type": "국립"
+  },
+  {
+    "name": "전북대학교",
+    "name_en": "Jeonbuk National University",
+    "url": "https://www.jbnu.ac.kr",
+    "admission_url": "https://ipsi.jbnu.ac.kr",
+    "location": "전주",
+    "university_type": "국립"
+  },
+  {
+    "name": "강원대학교",
+    "name_en": "Kangwon National University",
+    "url": "https://www.kangwon.ac.kr",
+    "admission_url": "https://enter.kangwon.ac.kr",
+    "location": "춘천",
+    "university_type": "국립"
+  },
+  {
+    "name": "제주대학교",
+    "name_en": "Jeju National University",
+    "url": "https://www.jejunu.ac.kr",
+    "admission_url": "https://ipsi.jejunu.ac.kr",
+    "location": "제주",
+    "university_type": "국립"
+  },
+  {
+    "name": "인하대학교",
+    "name_en": "Inha University",
+    "url": "https://www.inha.ac.kr",
+    "admission_url": "https://admission.inha.ac.kr",
+    "location": "인천",
+    "university_type": "사립"
+  },
+  {
+    "name": "아주대학교",
+    "name_en": "Ajou University",
+    "url": "https://www.ajou.ac.kr",
+    "admission_url": "https://ipsi.ajou.ac.kr",
+    "location": "수원",
+    "university_type": "사립"
+  },
+  {
+    "name": "단국대학교",
+    "name_en": "Dankook University",
+    "url": "https://www.dankook.ac.kr",
+    "admission_url": "https://ipsi.dankook.ac.kr",
+    "location": "용인",
+    "university_type": "사립"
+  },
+  {
+    "name": "숙명여자대학교",
+    "name_en": "Sookmyung Women's University",
+    "url": "https://www.sookmyung.ac.kr",
+    "admission_url": "https://admission.sookmyung.ac.kr",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "한국외국어대학교",
+    "name_en": "Hankuk University of Foreign Studies",
+    "url": "https://www.hufs.ac.kr",
+    "admission_url": "https://ipsi.hufs.ac.kr",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "가톨릭대학교",
+    "name_en": "Catholic University of Korea",
+    "url": "https://www.catholic.ac.kr",
+    "admission_url": "https://ipsi.catholic.ac.kr",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "한국항공대학교",
+    "name_en": "Korea Aerospace University",
+    "url": "https://www.kau.ac.kr",
+    "admission_url": "https://ipsi.kau.ac.kr",
+    "location": "고양",
+    "university_type": "사립"
+  },
+  {
+    "name": "서울여자대학교",
+    "name_en": "Seoul Women's University",
+    "url": "https://www.swu.ac.kr",
+    "admission_url": "https://ipsi.swu.ac.kr",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "덕성여자대학교",
+    "name_en": "Duksung Women's University",
+    "url": "https://www.duksung.ac.kr",
+    "admission_url": "https://ipsi.duksung.ac.kr",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "동덕여자대학교",
+    "name_en": "Dongduk Women's University",
+    "url": "https://www.dongduk.ac.kr",
+    "admission_url": "https://ipsi.dongduk.ac.kr",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "성신여자대학교",
+    "name_en": "Sungshin Women's University",
+    "url": "https://www.sungshin.ac.kr",
+    "admission_url": "https://ipsi.sungshin.ac.kr",
+    "location": "서울",
+    "university_type": "사립"
+  },
+  {
+    "name": "영남대학교",
+    "name_en": "Yeungnam University",
+    "url": "https://www.yu.ac.kr",
+    "admission_url": "https://admission.yu.ac.kr",
+    "location": "경산",
+    "university_type": "사립"
+  },
+  {
+    "name": "계명대학교",
+    "name_en": "Keimyung University",
+    "url": "https://www.kmu.ac.kr",
+    "admission_url": "https://admission.kmu.ac.kr",
+    "location": "대구",
+    "university_type": "사립"
+  },
+  {
+    "name": "동아대학교",
+    "name_en": "Dong-A University",
+    "url": "https://www.donga.ac.kr",
+    "admission_url": "https://ipsi.donga.ac.kr",
+    "location": "부산",
+    "university_type": "사립"
+  },
+  {
+    "name": "부경대학교",
+    "name_en": "Pukyong National University",
+    "url": "https://www.pknu.ac.kr",
+    "admission_url": "https://ipsi.pknu.ac.kr",
+    "location": "부산",
+    "university_type": "국립"
+  },
+  {
+    "name": "울산대학교",
+    "name_en": "University of Ulsan",
+    "url": "https://www.ulsan.ac.kr",
+    "admission_url": "https://ipsi.ulsan.ac.kr",
+    "location": "울산",
+    "university_type": "사립"
+  }
+]

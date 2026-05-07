@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>입시 AI 상담사</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://js.tosspayments.com/v1/payment"></script>
+  <style>
+    .chat-bubble { max-width: 80%; }
+    .prose table { display: block; overflow-x: auto; border-collapse: collapse; width: max-content; max-width: 100%; margin: 0.5rem 0; }
+    .prose th, .prose td { border: 1px solid #d1d5db; padding: 0.4rem 0.75rem; text-align: left; }
+    .prose th { background: #f3f4f6; font-weight: 600; }
+    .prose ul, .prose ol { padding-left: 1.5rem; }
+    .typing-dot { animation: blink 1s step-start infinite; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blink { 50% { opacity: 0; } }
+    #messages { scroll-behavior: smooth; }
+  </style>
+</head>
+<body class="bg-gray-50 h-screen flex flex-col overflow-hidden">
+
+  <!-- ① Auth Modal (overlaid on chat screen) -->
+  <div id="auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 relative">
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">✕</button>
+
+      <!-- View: main auth options -->
+      <div id="auth-view-main">
+        <div class="text-4xl text-center mb-3">🎓</div>
+        <h2 class="text-xl font-bold text-gray-800 text-center mb-1">입시 AI 상담사</h2>
+        <p class="text-gray-500 text-sm text-center mb-5">로그인하면 대화 기록과 맞춤 프로필을 저장할 수 있어요.</p>
+
+        <a href="/auth/google"
+           class="flex items-center justify-center gap-3 bg-white border border-gray-300 rounded-xl px-4 py-3 text-gray-700 font-medium hover:bg-gray-50 transition shadow-sm mb-3">
+          <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          Google로 로그인
+        </a>
+
+        <div class="flex items-center gap-2 mb-3">
+          <div class="flex-1 h-px bg-gray-200"></div>
+          <span class="text-xs text-gray-400">또는</span>
+          <div class="flex-1 h-px bg-gray-200"></div>
+        </div>
+
+        <button onclick="showAuthView('signup')"
+                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-xl transition mb-2">
+          이메일로 가입하기
+        </button>
+        <button onclick="showAuthView('login-email')"
+                class="w-full border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-3 rounded-xl transition">
+          이메일로 로그인
+        </button>
+      </div>
+
+      <!-- View: email signup -->
+      <div id="auth-view-signup" class="hidden">
+        <button onclick="showAuthView('main')" class="text-xs text-blue-500 mb-4 hover:underline">← 뒤로</button>
+        <h2 class="text-lg font-bold text-gray-800 mb-4">이메일로 가입하기</h2>
+        <div id="signup-error" class="hidden text-red-500 text-sm mb-3 p-3 bg-red-50 rounded-lg"></div>
+        <input id="signup-email" type="email" placeholder="이메일 주소"
+               class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <input id="signup-password" type="password" placeholder="비밀번호 (6자 이상)"
+               class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <button onclick="submitSignup()"
+                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-xl transition">
+          인증 코드 받기
+        </button>
+      </div>
+
+      <!-- View: email verification -->
+      <div id="auth-view-verify" class="hidden">
+        <h2 class="text-lg font-bold text-gray-800 mb-1">이메일 인증</h2>
+        <p id="verify-desc" class="text-gray-500 text-sm mb-4">이메일로 발송된 6자리 인증 코드를 입력해 주세요.</p>
+        <div id="verify-error" class="hidden text-red-500 text-sm mb-3 p-3 bg-red-50 rounded-lg"></div>
+        <input id="verify-code" type="text" placeholder="인증 코드 6자리" maxlength="6"
+               class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400 text-center tracking-widest text-lg font-bold" />
+        <button onclick="submitVerify()"
+                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-xl transition mb-2">
+          인증 완료
+        </button>
+        <button onclick="resendCode()" class="w-full text-gray-400 hover:text-gray-600 text-sm py-2 transition">
+          코드 다시 받기
+        </button>
+      </div>
+
+      <!-- View: email login -->
+      <div id="auth-view-login-email" class="hidden">
+        <button onclick="showAuthView('main')" class="text-xs text-blue-500 mb-4 hover:underline">← 뒤로</button>
+        <h2 class="text-lg font-bold text-gray-800 mb-4">이메일로 로그인</h2>
+        <div id="login-error" class="hidden text-red-500 text-sm mb-3 p-3 bg-red-50 rounded-lg"></div>
+        <input id="login-email" type="email" placeholder="이메일 주소"
+               class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <input id="login-password" type="password" placeholder="비밀번호"
+               class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <button onclick="submitEmailLogin()"
+                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-xl transition">
+          로그인
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② Chat Screen -->
+  <div id="chat-screen" class="hidden flex-1 flex flex-col overflow-hidden">
+
+    <!-- Mobile header bar -->
+    <div class="flex md:hidden items-center gap-3 bg-white border-b border-gray-200 px-4 py-3 shrink-0">
+      <button onclick="toggleSidebar()" class="text-gray-500 hover:text-gray-700 p-1 -ml-1">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+      <span class="text-base font-bold text-gray-800">🎓 입시 상담</span>
+      <div class="ml-auto">
+        <img id="user-avatar-mobile" src="" alt="" class="w-8 h-8 rounded-full bg-gray-200" />
+      </div>
+    </div>
+
+    <!-- Body row: sidebar + main -->
+    <div class="flex flex-1 overflow-hidden relative">
+
+      <!-- Backdrop (mobile only, shown when sidebar open) -->
+      <div id="sidebar-backdrop"
+           class="hidden fixed inset-0 z-30 bg-black/40"
+           onclick="closeSidebar()"></div>
+
+      <!-- Sidebar -->
+      <aside id="sidebar"
+             class="fixed md:static inset-y-0 left-0 z-40 w-72 md:w-64 bg-white border-r border-gray-200 flex flex-col p-4 shrink-0 overflow-y-auto
+                    -translate-x-full md:translate-x-0 transition-transform duration-200">
+        <div class="text-xl font-bold text-gray-800 mb-1">🎓 입시 상담</div>
+        <p class="text-xs text-gray-400 mb-6">AI 기반 대학 입시 상담</p>
+
+        <!-- User info (logged in) -->
+        <div id="user-info-section" class="flex items-center gap-3 mb-4 hidden">
+          <img id="user-avatar" src="" alt="" class="w-9 h-9 rounded-full bg-gray-200" />
+          <div>
+            <div id="user-name" class="text-sm font-semibold text-gray-700 truncate w-36"></div>
+            <div id="user-email" class="text-xs text-gray-400 truncate w-36"></div>
+          </div>
+        </div>
+
+        <!-- Anonymous user CTA -->
+        <div id="anon-login-section" class="mb-4 p-3 bg-blue-50 rounded-xl hidden">
+          <p class="text-xs text-blue-700 mb-2">로그인하면 대화 기록과<br/>맞춤 프로필을 저장할 수 있어요.</p>
+          <button onclick="openAuthModal()"
+                  class="w-full bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold py-2 rounded-lg transition">
+            로그인 / 가입하기
+          </button>
+        </div>
+
+        <!-- Tier badge + upgrade -->
+        <div class="flex items-center justify-between mb-3">
+          <span id="tier-badge"
+                class="text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-200 text-gray-600">베타</span>
+          <button id="upgrade-btn" onclick="openUpgradeModal()"
+                  class="hidden text-xs text-blue-600 font-semibold hover:underline">업그레이드</button>
+          <button id="manage-btn" onclick="window.open('https://customer.toss.im','_blank')"
+                  class="hidden text-xs text-gray-400 hover:underline">구독 관리</button>
+        </div>
+
+        <!-- Usage -->
+        <div class="bg-blue-50 rounded-lg p-3 mb-4">
+          <div class="text-xs text-blue-600 font-medium mb-1">오늘 사용량</div>
+          <div class="flex items-center gap-2">
+            <div class="flex-1 bg-blue-200 rounded-full h-2">
+              <div id="usage-bar" class="bg-blue-500 h-2 rounded-full transition-all" style="width:0%"></div>
+            </div>
+            <span id="usage-text" class="text-xs text-blue-700 font-semibold whitespace-nowrap">0/1</span>
+          </div>
+          <div id="monthly-usage" class="text-xs text-blue-500 mt-1 hidden"></div>
+        </div>
+
+        <!-- Ad credit button (free tier only, shown when limit hit) -->
+        <button id="watch-ad-btn" onclick="openAdModal()"
+                class="hidden w-full bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-700 text-xs font-semibold py-2 px-3 rounded-lg mb-3 transition">
+          📺 광고 보고 추가 질문하기
+        </button>
+
+        <!-- New chat button -->
+        <button onclick="clearChat()"
+                class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium py-2 px-3 rounded-lg mb-2 transition">
+          + 새 대화
+        </button>
+        <!-- Profile button (logged-in only) -->
+        <button id="profile-btn" onclick="openProfileModal()"
+                class="hidden w-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium py-2 px-3 rounded-lg mb-3 transition">
+          👤 내 프로필 설정
+        </button>
+
+        <!-- Sample questions -->
+        <div class="text-xs text-gray-400 font-medium uppercase tracking-wide mb-2">예시 질문</div>
+        <div class="space-y-1 text-xs flex-1 overflow-y-auto">
+          <button onclick="askSample(this)" class="w-full text-left text-gray-600 hover:text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition leading-snug">
+            내신 2.8등급으로 갈 수 있는 서울 대학교 5개 알려줘
+          </button>
+          <button onclick="askSample(this)" class="w-full text-left text-gray-600 hover:text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition leading-snug">
+            수능 국수영탐 3·2·1·4등급으로 정시 갈 수 있는 학교는?
+          </button>
+          <button onclick="askSample(this)" class="w-full text-left text-gray-600 hover:text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition leading-snug">
+            서강대학교 학생부종합 전형 상세 정보 알려줘
+          </button>
+          <button onclick="askSample(this)" class="w-full text-left text-gray-600 hover:text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition leading-snug">
+            내신 2.8등급 수시 포트폴리오 6장 추천해줘
+          </button>
+          <button onclick="askSample(this)" class="w-full text-left text-gray-600 hover:text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition leading-snug">
+            컴퓨터공학과 입결 높은 서울 대학교 비교해줘
+          </button>
+        </div>
+
+        <div class="mt-4" id="logout-section">
+          <a href="/auth/logout" class="block text-xs text-gray-400 hover:text-red-500 transition px-1">로그아웃</a>
+        </div>
+      </aside>
+
+      <!-- Main chat area -->
+      <main class="flex-1 flex flex-col overflow-hidden">
+        <!-- Messages -->
+        <div id="messages" class="flex-1 overflow-y-auto px-3 md:px-6 py-4 space-y-4">
+          <!-- Welcome message -->
+          <div class="flex gap-3 justify-start" id="welcome-msg">
+            <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm shrink-0">AI</div>
+            <div class="chat-bubble bg-white rounded-2xl rounded-tl-sm shadow-sm p-4">
+              <p class="text-gray-700 text-sm">안녕하세요! 저는 입시 AI 상담사입니다. 🎓</p>
+              <p class="text-gray-600 text-sm mt-1">내신이나 수능 성적을 알려주시면 맞춤형 대학 추천을 도와드립니다.</p>
+              <p class="text-gray-500 text-xs mt-2">예: "내신 2.8등급 서울 수시 추천해줘" 또는 "수능 국수영탐 3212 등급으로 갈 수 있는 학교?"</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input area -->
+        <div class="border-t border-gray-200 bg-white px-3 md:px-4 py-3">
+          <div class="flex gap-2 items-end max-w-4xl mx-auto">
+            <textarea id="input"
+                      rows="1"
+                      placeholder="질문을 입력하세요..."
+                      class="flex-1 border border-gray-300 rounded-xl px-4 py-3 text-base md:text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent max-h-32"
+                      onkeydown="handleKeydown(event)"
+                      oninput="autoResize(this)"></textarea>
+            <button id="send-btn"
+                    onclick="sendMessage()"
+                    class="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white rounded-xl p-3 transition shrink-0">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Ad Modal (rewarded ad to earn extra questions) -->
+  <div id="ad-modal"
+       class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+    <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 text-center">
+      <div id="ad-modal-icon" class="text-4xl mb-3">📺</div>
+      <h2 id="ad-modal-title" class="text-lg font-bold text-gray-800 mb-1">광고 시청으로 추가 질문 받기</h2>
+      <p id="ad-modal-desc" class="text-gray-500 text-sm mb-4"></p>
+
+      <!-- Ad container (Google AdSense rewarded ad renders here) -->
+      <div id="ad-container" class="hidden mb-4 min-h-[250px] flex items-center justify-center bg-gray-100 rounded-xl">
+        <ins id="adsense-ad" class="adsbygoogle"
+             style="display:block"
+             data-ad-format="fluid"
+             data-ad-layout="in-article"></ins>
+      </div>
+
+      <!-- Countdown shown while ad plays -->
+      <div id="ad-countdown" class="hidden mb-4">
+        <div class="text-3xl font-bold text-blue-500 mb-1" id="ad-timer">5</div>
+        <p class="text-xs text-gray-400">광고 시청 중...</p>
+        <div class="mt-2 bg-gray-200 rounded-full h-1.5">
+          <div id="ad-progress" class="bg-blue-500 h-1.5 rounded-full transition-all duration-1000" style="width:0%"></div>
+        </div>
+      </div>
+
+      <button id="ad-watch-btn" onclick="startWatchAd()"
+              class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-xl transition mb-2">
+        광고 보기
+      </button>
+      <button onclick="closeAdModal()"
+              class="w-full text-gray-400 hover:text-gray-600 text-sm py-2 transition">
+        닫기
+      </button>
+    </div>
+  </div>
+
+  <!-- Upgrade Modal -->
+  <div id="upgrade-modal"
+       class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6">
+      <div class="text-2xl mb-2 text-center">🚀</div>
+      <h2 class="text-xl font-bold text-gray-800 text-center mb-1">프리미엄으로 업그레이드</h2>
+      <p class="text-gray-500 text-sm text-center mb-5">더 정확한 AI 상담을 무제한으로</p>
+      <ul class="space-y-2 mb-6 text-sm text-gray-700">
+        <li class="flex items-center gap-2"><span class="text-green-500">✓</span> 하루 5문항 / 한 달 100문항</li>
+        <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Claude AI (더 정확한 답변)</li>
+        <li class="flex items-center gap-2"><span class="text-green-500">✓</span> 월 <strong>8,000원</strong></li>
+      </ul>
+      <button onclick="startSubscription()"
+              class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-xl transition mb-2">
+        업그레이드 하기
+      </button>
+      <button onclick="closeUpgradeModal()"
+              class="w-full text-gray-400 hover:text-gray-600 text-sm py-2 transition">
+        나중에
+      </button>
+    </div>
+  </div>
+
+  <!-- Profile Modal -->
+  <div id="profile-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 max-h-[90vh] overflow-y-auto">
+      <h2 class="text-lg font-bold text-gray-800 mb-1">내 프로필 설정</h2>
+      <p class="text-gray-500 text-xs mb-4">입력하면 더 맞춤화된 추천을 받을 수 있어요. 모두 선택 사항입니다.</p>
+
+      <label class="block text-xs font-semibold text-gray-600 mb-1">성별</label>
+      <div class="flex gap-2 mb-4">
+        <button id="gender-male" onclick="setGender('남')" class="flex-1 border border-gray-300 rounded-xl py-2 text-sm hover:bg-blue-50 transition">남</button>
+        <button id="gender-female" onclick="setGender('여')" class="flex-1 border border-gray-300 rounded-xl py-2 text-sm hover:bg-blue-50 transition">여</button>
+        <button id="gender-none" onclick="setGender('')" class="flex-1 border border-gray-300 rounded-xl py-2 text-sm hover:bg-blue-50 transition">미입력</button>
+      </div>
+
+      <label class="block text-xs font-semibold text-gray-600 mb-1">고등학교 이름</label>
+      <input id="profile-school-name" type="text" placeholder="예: 한양고등학교"
+             class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+
+      <label class="block text-xs font-semibold text-gray-600 mb-1">고등학교 소재지</label>
+      <input id="profile-school-region" type="text" placeholder="예: 서울, 경기, 충남"
+             class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+
+      <label class="block text-xs font-semibold text-gray-600 mb-1">학교 유형</label>
+      <div class="flex gap-2 mb-4">
+        <button id="school-urban" onclick="setSchoolType('urban')" class="flex-1 border border-gray-300 rounded-xl py-2 text-sm hover:bg-blue-50 transition">도시</button>
+        <button id="school-rural" onclick="setSchoolType('rural')" class="flex-1 border border-gray-300 rounded-xl py-2 text-sm hover:bg-blue-50 transition">농어촌</button>
+      </div>
+
+      <label class="block text-xs font-semibold text-gray-600 mb-1">졸업 예정 연도</label>
+      <input id="profile-grad-year" type="number" placeholder="예: 2026" min="2024" max="2030"
+             class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+
+      <label class="block text-xs font-semibold text-gray-600 mb-1">계열</label>
+      <div class="flex gap-2 mb-4">
+        <button id="track-natural" onclick="setTrack('자연')" class="flex-1 border border-gray-300 rounded-xl py-2 text-sm hover:bg-blue-50 transition">자연</button>
+        <button id="track-human" onclick="setTrack('인문')" class="flex-1 border border-gray-300 rounded-xl py-2 text-sm hover:bg-blue-50 transition">인문</button>
+        <button id="track-art" onclick="setTrack('예체능')" class="flex-1 border border-gray-300 rounded-xl py-2 text-sm hover:bg-blue-50 transition">예체능</button>
+      </div>
+
+      <label class="block text-xs font-semibold text-gray-600 mb-1">관심 학과 (쉼표로 구분)</label>
+      <input id="profile-interests" type="text" placeholder="예: 컴퓨터공학, 소프트웨어"
+             class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+
+      <div id="profile-success" class="hidden text-green-600 text-sm mb-3 p-3 bg-green-50 rounded-lg">저장되었습니다!</div>
+      <button onclick="saveProfile()"
+              class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-xl transition mb-2">
+        저장하기
+      </button>
+      <button onclick="closeProfileModal()"
+              class="w-full text-gray-400 hover:text-gray-600 text-sm py-2 transition">
+        닫기
+      </button>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

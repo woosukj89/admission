@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "admission-crawler"
+version = "0.1.0"
+description = "Korean University Admission Information Crawler"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "httpx[http2]>=0.27.0",
+    "beautifulsoup4>=4.12.0",
+    "lxml>=5.0.0",
+    "PyMuPDF>=1.24.0",
+    "python-docx>=1.1.0",
+    "olefile>=0.47",
+    "pydantic>=2.0",
+    "pydantic-settings>=2.0",
+    "typer>=0.12.0",
+    "rich>=13.0",
+    "chardet>=5.0",
+    "tqdm>=4.66",
+    "aiofiles>=24.0",
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "google-genai>=1.0",
+    "python-jose[cryptography]>=3.3",
+    "anthropic>=0.30",
+    "sse-starlette>=1.6",
+]
+
+[project.scripts]
+admission = "src.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]

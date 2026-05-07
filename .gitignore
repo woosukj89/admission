@@ -1,0 +1,11 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+data/raw/
+data/extracted/
+data/results/
+data/results_extracted/
+data/*.db
+admission_crawler.egg-info/
+temp/

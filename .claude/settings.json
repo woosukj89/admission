@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "admission": {
+      "command": "C:/Users/woosu/Projects/Apps/admission/.venv/Scripts/python.exe",
+      "args": ["C:/Users/woosu/Projects/Apps/admission/src/mcp_server.py"]
+    }
+  }
+}

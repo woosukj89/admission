@@ -1,0 +1,33 @@
+name: admission_app
+description: 한국 대학 입시 AI 상담 앱
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # Google Sign-In
+  google_sign_in: ^6.2.1
+  # HTTP client
+  http: ^1.2.1
+  # Persistent storage (JWT token)
+  shared_preferences: ^2.2.3
+  # Markdown rendering for AI responses
+  flutter_markdown: ^0.7.3
+  # RevenueCat in-app purchases (iOS + Android)
+  purchases_flutter: ^7.5.1
+  # AdMob rewarded ads
+  google_mobile_ads: ^5.1.0
+  # Icons
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true

@@ -1,0 +1,35 @@
+# Core HTTP & Parsing
+httpx[http2]>=0.27.0
+beautifulsoup4>=4.12.0
+lxml>=5.0.0
+
+# Document Processing
+PyMuPDF>=1.24.0
+python-docx>=1.1.0
+olefile>=0.47
+
+# Data & Validation
+pydantic>=2.0
+pydantic-settings>=2.0
+
+# CLI
+typer>=0.12.0
+rich>=13.0
+
+# Utilities
+chardet>=5.0
+tqdm>=4.66
+aiofiles>=24.0
+
+# API
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+
+# Web client
+google-genai>=1.0
+python-jose[cryptography]>=3.3
+anthropic>=0.30
+sse-starlette>=1.6
+python-dotenv>=1.0
+bcrypt
+psycopg2-binary
