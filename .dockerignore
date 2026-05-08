@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+data/raw/
+data/extracted/
+data/results/
+data/results_extracted/
+data/*.db
+migration/csv/
+temp/
+mobile/
+vercel.json
