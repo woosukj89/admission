@@ -321,6 +321,13 @@ class AdmissionStore:
                 return None
             result = dict(row)
             result["attributes"] = json.loads(result.get("attributes") or "{}")
+            # Use full content from detail table if available (cloud deployment has truncated content)
+            detail = conn.execute(
+                "SELECT full_content FROM admission_process_detail WHERE process_id = ?",
+                (process_id,)
+            ).fetchone()
+            if detail:
+                result["content"] = detail["full_content"] if isinstance(detail, dict) else detail[0]
             return result
 
     def find_processes(self, *, department_id: int | None = None,
