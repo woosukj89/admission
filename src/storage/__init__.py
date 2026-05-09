@@ -1,8 +1,7 @@
 """Data storage modules"""
 
-from .file_storage import FileStorage
-from .json_storage import JSONStorage
-from .sqlite_storage import SQLiteStorage
+# FileStorage/JSONStorage/SQLiteStorage are data-pipeline only — not imported here
+# to avoid pulling in chardet and other crawler dependencies on the web/Vercel path.
 from .admission_store import AdmissionStore
 
-__all__ = ["FileStorage", "JSONStorage", "SQLiteStorage", "AdmissionStore"]
+__all__ = ["AdmissionStore"]
