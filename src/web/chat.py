@@ -40,7 +40,7 @@ def _tool_status(tool_names: list[str]) -> str:
     return _status(" · ".join(labels))
 
 CLAUDE_MODEL = "claude-haiku-4-5-20251001"
-GEMINI_MODEL = "gemini-2.0-flash"
+GEMINI_MODEL = "gemini-2.0-flash-lite"
 CLAUDE_TIMEOUT = 60.0
 GEMINI_TIMEOUT = 60.0
 INTER_CALL_DELAY = 1.0
