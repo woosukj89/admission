@@ -1023,6 +1023,7 @@ def match_by_grade(
     university: str | None = None,
     major_keywords: list[str] = [],
     track: str | None = None,
+    process_type: str = "",
     risk_tolerance: str = "all",
     min_result_year: int = 2024,
     exclude_regional: bool = False,
@@ -1057,6 +1058,9 @@ def match_by_grade(
                         "reach" or "all" (includes 도전).
         min_result_year: Only include results from this year or later (default 2024).
                          Pass 0 to include all years.
+        process_type: Optional filter for 전형 type: "교과", "종합", "논술", "수능".
+                     Substring-matched against process_name (e.g., "교과" matches "학생부교과전형").
+                     Leave empty to include all 전형 types.
         exclude_regional: If True, exclude 지역인재 전형s. Default False.
         exclude_special: If True (default), exclude restricted-access special 전형s
                          (기회균형, 농어촌, 특성화고, 장애인, 재직자 등).
@@ -1193,6 +1197,10 @@ def match_by_grade(
             dept_row = {"track": r.get("track") or "", "name": dept_name}
             if not _matches_track(dept_row, track):
                 continue
+
+        # process_type filter: "교과", "종합", "논술", "수능" substring match
+        if process_type and process_type not in (r.get("process_name") or ""):
+            continue
 
         # F1: skip restricted special 전형s (기회균형, 농어촌, 특성화고 등)
         if exclude_special and _is_special_admission(r.get("process_name") or ""):
@@ -1543,6 +1551,102 @@ def search_fulltext(
             "process_type": r.get("process_type", ""),
             "snippet": content[:200],
         })
+    return results
+
+
+# ── Tool: browse_university_results ──────────────────────────────────────────
+
+@mcp.tool()
+def browse_university_results(
+    university: str,
+    process_type: str = "",
+    admission_type: str = "수시",
+    track: str = "",
+    sort: str = "asc",
+    exclude_special: bool = True,
+    exclude_regional: bool = False,
+    limit: int = 30,
+) -> list[dict]:
+    """List all admission results for a specific university sorted by cut score.
+
+    Use this when the user asks for a university's programs WITHOUT providing
+    their own grade. For example:
+      "부산대 교과전형 학과 컷 낮은 순서로 알려줘"
+      "동국대 교과전형 내신 70컷 알려줘"
+      "명지대 종합전형 컷 높은 순서로 10개"
+
+    Args:
+        university: University name substring (e.g., "부산대", "동국대", "명지대").
+        process_type: Filter by 전형 type substring: "교과", "종합", "논술", "수능".
+                      Leave empty to include all 전형 types.
+        admission_type: "수시" (default) or "정시".
+        track: Filter by 계열: "인문", "자연", "예체능". Leave empty for all.
+        sort: "asc" = hardest first (lowest cut_70, most selective).
+              "desc" = easiest first (highest cut_70, easiest to enter).
+              Use "desc" when user says "낮은 순서" (easiest/lowest threshold).
+        exclude_special: If True (default), exclude 기회균형, 농어촌, 특성화고 etc.
+        exclude_regional: If True, exclude 지역인재 전형s. Default False.
+        limit: Maximum results (default 30).
+
+    Returns:
+        List of programs with department, process_name, cut_70, cut_50,
+        competition_rate, result_year sorted by cut_70.
+    """
+    with _store._conn() as conn:
+        clauses = [
+            "d.university LIKE ?",
+            "r.admission_type = ?",
+            "r.cut_70 IS NOT NULL",
+        ]
+        params: list = [f"%{university}%", admission_type]
+
+        if process_type:
+            clauses.append("r.process_name LIKE ?")
+            params.append(f"%{process_type}%")
+        if track:
+            clauses.append("(d.track = ? OR d.name LIKE ?)")
+            params.extend([track, f"%{track}%"])
+
+        order = "ASC" if sort == "asc" else "DESC"
+        where = " AND ".join(clauses)
+        rows = conn.execute(f"""
+            SELECT d.name AS department_name, d.track,
+                   r.process_name, r.admission_type,
+                   r.cut_50, r.cut_70, r.competition_rate, r.result_year
+            FROM admission_result r
+            JOIN admission_department d ON d.id = r.department_id
+            WHERE {where}
+            ORDER BY r.cut_70 {order} NULLS LAST
+            LIMIT ?
+        """, params + [limit * 3]).fetchall()  # over-fetch to allow filtering
+
+    results: list[dict] = []
+    seen: set[tuple] = set()
+    for row in rows:
+        dept, _track, proc, adm, cut50, cut70, rate, year = row
+        if not _is_valid_dept_name(dept) or not _is_valid_dept_name(proc):
+            continue
+        if exclude_special and _is_special_admission(proc or ""):
+            continue
+        if exclude_regional and _is_regional(proc or ""):
+            continue
+        key = (dept, proc)
+        if key in seen:
+            continue
+        seen.add(key)
+        results.append({
+            "department": dept,
+            "track": _track or "",
+            "process_name": proc,
+            "admission_type": adm,
+            "cut_50": cut50,
+            "cut_70": cut70,
+            "competition_rate": rate,
+            "result_year": year,
+        })
+        if len(results) >= limit:
+            break
+
     return results
 
 
