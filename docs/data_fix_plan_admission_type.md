@@ -117,11 +117,20 @@ NULL 레코드는 grade-matching 쿼리에서 필터링되어 보이지 않음.
 - [x] 데이터 수정: 전체 안전 규칙 적용 (1,134건, SQLite)
 - [x] SQL 파일 생성: `migration/fix_admission_type_susi.sql`
 - [x] GitHub 푸시
-- [ ] **Supabase에서 SQL 실행** (`migration/fix_admission_type_susi.sql`)
-- [ ] Gap A 조사: `전형기간 자율` 레코드
-- [ ] Gap B 조사: `NULL` admission_type (~1,200건)
-- [ ] Gap C/D 검증: 중복 파일 대학들 DB 상태 확인
+- [x] **Supabase에서 SQL 실행** (`migration/fix_admission_type_susi.sql`) — 완료
+- [x] Gap A 조사: `전형기간 자율` 5,660건 → 합법적 전형 타입 (재직자/만학도). 수정 불필요.
+- [x] Gap B 조사: `NULL` admission_type → 858건 수정 완료 (수시 660건, 정시 122건, 기타 76건). 45건 잔여 (편입학, 정원외 등 — NULL 유지 적합).
+- [x] Gap C/D 검증: 결과 요약 — 성공회대/세명대/남서울대/백석대/ERICA 정상. 연세대 52건 (전형미상) 불명확하여 유지.
+- [x] SQL 파일 생성: `migration/fix_null_and_grade_type.sql` — Supabase 적용 필요
+- [ ] **Supabase에서 SQL 실행** (`migration/fix_null_and_grade_type.sql`)
 - [ ] 선택사항: 코드 수정 후 25개 대학 재추출 (현재 SQL 패치로 데이터 정상화됨)
+
+## 6. Gap A 상세: 전형기간 자율
+
+5,660건 / 80개 대학. 재직자전형, 만학도전형, 성인학습자전형 등이 포함.
+이 전형들은 수능/내신 기반이 아닌 특수 대상자 전형으로, 현역 고3 학생에게는 해당 없음.
+MCP 도구 쿼리에서 `admission_type='수시'` 필터와 별도로 `'전형기간 자율'`을 포함할 수 있으나,
+일반 상담 목적에서는 제외가 적합. **현 상태 유지.**
 
 ---
 
