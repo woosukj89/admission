@@ -2,22 +2,46 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>입시 AI 상담사</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://js.tosspayments.com/v1/payment"></script>
   <style>
-    .chat-bubble { max-width: 80%; }
-    .prose table { display: block; overflow-x: auto; border-collapse: collapse; width: max-content; max-width: 100%; margin: 0.5rem 0; }
-    .prose th, .prose td { border: 1px solid #d1d5db; padding: 0.4rem 0.75rem; text-align: left; }
+    /* Chat bubbles: viewport-bounded on mobile */
+    .chat-bubble {
+      max-width: min(80%, calc(100vw - 80px));
+      min-width: 0;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+    @media (max-width: 640px) {
+      .chat-bubble { max-width: calc(100vw - 72px); }
+    }
+
+    /* Message area: no horizontal scroll on the container */
+    #messages { scroll-behavior: smooth; overflow-x: hidden; }
+
+    /* Tables: scroll inside a wrapper div (added by renderMarkdown) */
+    .table-scroll-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0.5rem 0; }
+    .prose table { border-collapse: collapse; width: max-content; min-width: 100%; }
+    .prose th, .prose td { border: 1px solid #d1d5db; padding: 0.4rem 0.75rem; text-align: left; white-space: nowrap; }
     .prose th { background: #f3f4f6; font-weight: 600; }
     .prose ul, .prose ol { padding-left: 1.5rem; }
+
+    /* Typing animation */
     .typing-dot { animation: blink 1s step-start infinite; }
     .typing-dot:nth-child(2) { animation-delay: 0.2s; }
     .typing-dot:nth-child(3) { animation-delay: 0.4s; }
     @keyframes blink { 50% { opacity: 0; } }
-    #messages { scroll-behavior: smooth; }
+
+    /* Input: comfortable size on mobile */
+    @media (max-width: 640px) {
+      #input { font-size: 16px; } /* prevents iOS zoom on focus */
+    }
+
+    /* iOS safe area for bottom input bar */
+    .pb-safe { padding-bottom: max(0.75rem, env(safe-area-inset-bottom)); }
   </style>
 </head>
 <body class="bg-gray-50 h-screen flex flex-col overflow-hidden">
@@ -237,7 +261,7 @@
         </div>
 
         <!-- Input area -->
-        <div class="border-t border-gray-200 bg-white px-3 md:px-4 py-3">
+        <div class="border-t border-gray-200 bg-white px-3 md:px-4 py-3 pb-safe">
           <div class="flex gap-2 items-end max-w-4xl mx-auto">
             <textarea id="input"
                       rows="1"

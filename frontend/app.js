@@ -794,6 +794,14 @@ function retryMessage(text, btn) {
 function renderMarkdown(el, text) {
   if (typeof marked !== 'undefined') {
     el.innerHTML = marked.parse(text);
+    // Wrap tables in a scrollable div so they scroll within the bubble on mobile
+    el.querySelectorAll('table').forEach(t => {
+      if (t.parentElement.classList.contains('table-scroll-wrap')) return;
+      const wrap = document.createElement('div');
+      wrap.className = 'table-scroll-wrap';
+      t.parentNode.insertBefore(wrap, t);
+      wrap.appendChild(t);
+    });
   } else {
     el.textContent = text;
   }
