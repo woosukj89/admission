@@ -121,8 +121,8 @@ NULL 레코드는 grade-matching 쿼리에서 필터링되어 보이지 않음.
 - [x] Gap A 조사: `전형기간 자율` 5,660건 → 합법적 전형 타입 (재직자/만학도). 수정 불필요.
 - [x] Gap B 조사: `NULL` admission_type → 858건 수정 완료 (수시 660건, 정시 122건, 기타 76건). 45건 잔여 (편입학, 정원외 등 — NULL 유지 적합).
 - [x] Gap C/D 검증: 결과 요약 — 성공회대/세명대/남서울대/백석대/ERICA 정상. 연세대 52건 (전형미상) 불명확하여 유지.
-- [x] SQL 파일 생성: `migration/fix_null_and_grade_type.sql` — Supabase 적용 필요
-- [ ] **Supabase에서 SQL 실행** (`migration/fix_null_and_grade_type.sql`)
+- [x] SQL 파일 생성: `migration/fix_null_and_grade_type.sql`
+- [x] **Supabase에서 SQL 실행** (`migration/fix_null_and_grade_type.sql`) — 완료 (수시 26,517 / 정시 8,821 / 전형기간 자율 5,660 / NULL 75)
 - [ ] 선택사항: 코드 수정 후 25개 대학 재추출 (현재 SQL 패치로 데이터 정상화됨)
 
 ## 6. Gap A 상세: 전형기간 자율
