@@ -29,11 +29,20 @@
     .prose th { background: #f3f4f6; font-weight: 600; }
     .prose ul, .prose ol { padding-left: 1.5rem; }
 
-    /* Typing animation */
-    .typing-dot { animation: blink 1s step-start infinite; }
-    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes blink { 50% { opacity: 0; } }
+    /* Whale spouting animation (replaces typing dots) */
+    @keyframes spout {
+      0%   { transform: translateY(0)     scale(1);   opacity: 0.9; }
+      75%  { transform: translateY(-18px) scale(0.5); opacity: 0.4; }
+      100% { transform: translateY(-24px) scale(0.2); opacity: 0;   }
+    }
+    .spout-drop {
+      animation: spout 1.4s ease-out infinite;
+      transform-box: fill-box;
+      transform-origin: center bottom;
+    }
+    .spout-drop:nth-child(1) { animation-delay: 0s;    }
+    .spout-drop:nth-child(2) { animation-delay: 0.35s; }
+    .spout-drop:nth-child(3) { animation-delay: 0.7s;  }
 
     /* Input: comfortable size on mobile */
     @media (max-width: 640px) {
@@ -251,7 +260,28 @@
         <div id="messages" class="flex-1 overflow-y-auto px-3 md:px-6 py-4 space-y-4">
           <!-- Welcome message -->
           <div class="flex gap-3 justify-start" id="welcome-msg">
-            <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm shrink-0">AI</div>
+            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0 overflow-hidden">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="32" height="32">
+                <path d="M80,64 C86,57 97,49 92,56 C89,61 86,62 84,63Z" fill="#3B82F6"/>
+                <path d="M80,69 C86,76 97,85 92,78 C89,73 86,71 84,70Z" fill="#3B82F6"/>
+                <ellipse cx="55" cy="70" rx="30" ry="18" fill="#60A5FA"/>
+                <circle  cx="28" cy="65" r="20" fill="#60A5FA"/>
+                <ellipse cx="33" cy="74" rx="14" ry="8" fill="#BFDBFE"/>
+                <path d="M45,86 Q38,93 51,91 Q56,88 52,84Z" fill="#3B82F6"/>
+                <ellipse cx="27" cy="47" rx="4.5" ry="2.8" fill="#2563EB"/>
+                <circle cx="21" cy="61" r="5.5" fill="white"/>
+                <circle cx="22" cy="61" r="3.5" fill="#0F172A"/>
+                <circle cx="23.5" cy="59.5" r="1.2" fill="white"/>
+                <path d="M13,70 Q18,76 27,72" stroke="#0F172A" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                <g transform="translate(27,46) rotate(-5)">
+                  <rect x="-14" y="-2" width="28" height="5" rx="1.5" fill="#1E293B"/>
+                  <rect x="-10" y="-15" width="20" height="14" rx="1" fill="#1E293B"/>
+                  <line x1="10" y1="-15" x2="16" y2="-3" stroke="#FBBF24" stroke-width="1.8" stroke-linecap="round"/>
+                  <circle cx="16" cy="-2" r="2.8" fill="#FBBF24"/>
+                  <circle cx="0" cy="-15" r="1.8" fill="#FBBF24"/>
+                </g>
+              </svg>
+            </div>
             <div class="chat-bubble bg-white rounded-2xl rounded-tl-sm shadow-sm p-4">
               <p class="text-gray-700 text-sm">안녕하세요! 저는 입시 AI 상담사입니다. 🎓</p>
               <p class="text-gray-600 text-sm mt-1">내신이나 수능 성적을 알려주시면 맞춤형 대학 추천을 도와드립니다.</p>

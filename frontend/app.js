@@ -1,5 +1,49 @@
 // Admission AI Chat Client
 
+// ── Whale mascot SVG constants ────────────────────────────────────────────────
+
+// Shared SVG body parts (string fragments reused in both constants below)
+const _WHALE_BODY_SVG = `
+  <path d="M80,64 C86,57 97,49 92,56 C89,61 86,62 84,63Z" fill="#3B82F6"/>
+  <path d="M80,69 C86,76 97,85 92,78 C89,73 86,71 84,70Z" fill="#3B82F6"/>
+  <ellipse cx="55" cy="70" rx="30" ry="18" fill="#60A5FA"/>
+  <circle  cx="28" cy="65" r="20" fill="#60A5FA"/>
+  <ellipse cx="33" cy="74" rx="14" ry="8" fill="#BFDBFE"/>
+  <path d="M45,86 Q38,93 51,91 Q56,88 52,84Z" fill="#3B82F6"/>
+  <ellipse cx="27" cy="47" rx="4.5" ry="2.8" fill="#2563EB"/>
+  <circle cx="21" cy="61" r="5.5" fill="white"/>
+  <circle cx="22" cy="61" r="3.5" fill="#0F172A"/>
+  <circle cx="23.5" cy="59.5" r="1.2" fill="white"/>
+  <path d="M13,70 Q18,76 27,72" stroke="#0F172A" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <g transform="translate(27,46) rotate(-5)">
+    <rect x="-14" y="-2" width="28" height="5" rx="1.5" fill="#1E293B"/>
+    <rect x="-10" y="-15" width="20" height="14" rx="1" fill="#1E293B"/>
+    <line x1="10" y1="-15" x2="16" y2="-3" stroke="#FBBF24" stroke-width="1.8" stroke-linecap="round"/>
+    <circle cx="16" cy="-2" r="2.8" fill="#FBBF24"/>
+    <circle cx="0" cy="-15" r="1.8" fill="#FBBF24"/>
+  </g>`;
+
+/** Static 32×32 avatar used in every AI message row */
+const WHALE_AVATAR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="32" height="32">${_WHALE_BODY_SVG}</svg>`;
+
+/** Animated spouting whale for the loading state (accepts an optional status label) */
+function whaleSpouting(statusText = '') {
+  const label = statusText
+    ? `<span class="text-gray-500 text-xs">${statusText}</span>`
+    : '';
+  return `<div class="flex items-center gap-2 py-0.5">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="44" height="44" style="overflow:visible;flex-shrink:0">
+      ${_WHALE_BODY_SVG}
+      <circle class="spout-drop" cx="27" cy="44" r="3.5" fill="#BAE6FD"/>
+      <circle class="spout-drop" cx="24" cy="41" r="2.5" fill="#93C5FD"/>
+      <circle class="spout-drop" cx="30" cy="39" r="3"   fill="#BAE6FD"/>
+    </svg>
+    ${label}
+  </div>`;
+}
+
+// ── App state ─────────────────────────────────────────────────────────────────
+
 const state = {
   user: null,
   history: [],   // [{role: 'user'|'model', parts: [string]}]
@@ -663,11 +707,7 @@ async function sendMessage() {
         try {
           const parsed = JSON.parse(chunk);
           if (parsed && typeof parsed === 'object' && parsed.status) {
-            aiBubble.innerHTML = `
-              <span class="text-gray-400 text-xs flex items-center gap-1.5">
-                <span class="typing-dot">●</span><span class="typing-dot">●</span><span class="typing-dot">●</span>
-                <span>${escapeHtml(parsed.status)}</span>
-              </span>`;
+            aiBubble.innerHTML = whaleSpouting(escapeHtml(parsed.status));
             scrollToBottom();
           } else if (parsed && typeof parsed === 'object' && parsed.error) {
             _showRetryBubble(aiBubble, text, parsed.error);
@@ -742,16 +782,12 @@ function createAIBubble() {
   wrapper.dataset.role = 'model';
 
   const avatar = document.createElement('div');
-  avatar.className = 'w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs shrink-0';
-  avatar.textContent = 'AI';
+  avatar.className = 'w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0 overflow-hidden';
+  avatar.innerHTML = WHALE_AVATAR_SVG;
 
   const bubble = document.createElement('div');
   bubble.className = 'chat-bubble bg-white rounded-2xl rounded-tl-sm shadow-sm p-4 text-sm prose max-w-none';
-  bubble.innerHTML = `<span class="text-gray-400">
-    <span class="typing-dot">●</span>
-    <span class="typing-dot">●</span>
-    <span class="typing-dot">●</span>
-  </span>`;
+  bubble.innerHTML = whaleSpouting();
 
   wrapper.appendChild(avatar);
   wrapper.appendChild(bubble);
