@@ -1596,7 +1596,7 @@ def browse_university_results(
         clauses = [
             "d.university LIKE ?",
             "r.admission_type = ?",
-            "r.cut_70 IS NOT NULL",
+            "(r.cut_70 IS NOT NULL OR r.average_score IS NOT NULL)",
         ]
         params: list = [f"%{university}%", admission_type]
 
@@ -1612,18 +1612,18 @@ def browse_university_results(
         rows = conn.execute(f"""
             SELECT d.name AS department_name, d.track,
                    r.process_name, r.admission_type,
-                   r.cut_50, r.cut_70, r.competition_rate, r.result_year
+                   r.cut_50, r.cut_70, r.average_score, r.competition_rate, r.result_year
             FROM admission_result r
             JOIN admission_department d ON d.id = r.department_id
             WHERE {where}
-            ORDER BY r.cut_70 {order} NULLS LAST
+            ORDER BY COALESCE(r.cut_70, r.average_score) {order} NULLS LAST
             LIMIT ?
         """, params + [limit * 3]).fetchall()  # over-fetch to allow filtering
 
     results: list[dict] = []
     seen: set[tuple] = set()
     for row in rows:
-        dept, _track, proc, adm, cut50, cut70, rate, year = row
+        dept, _track, proc, adm, cut50, cut70, avg, rate, year = row
         if not _is_valid_dept_name(dept) or not _is_valid_dept_name(proc):
             continue
         if exclude_special and _is_special_admission(proc or ""):
@@ -1634,6 +1634,7 @@ def browse_university_results(
         if key in seen:
             continue
         seen.add(key)
+        score_label = "70%컷" if cut70 is not None else "평균(컷 미공개)"
         results.append({
             "department": dept,
             "track": _track or "",
@@ -1641,6 +1642,8 @@ def browse_university_results(
             "admission_type": adm,
             "cut_50": cut50,
             "cut_70": cut70,
+            "average_score": avg,
+            "score_label": score_label,
             "competition_rate": rate,
             "result_year": year,
         })

@@ -137,14 +137,15 @@ def match_any(text: str, patterns: list[str]) -> bool:
 def detect_score_type_from_hints(col_label: str) -> str | None:
     """Detect score type from column label content."""
     l = norm(col_label)
-    if any(h in l for h in GRADE_HINTS):
-        return '등급'
+    # Check 환산 before 학생부/등급 — '학생부 환산점수' must not be misclassified as '등급'
+    if any(h in l for h in CONVERTED_HINTS):
+        return '환산점수'
     if any(h in l for h in STD_SCORE_HINTS):
         return '표준점수'
     if any(h in l for h in PERCENTILE_HINTS):
         return '백분위'
-    if any(h in l for h in CONVERTED_HINTS):
-        return '환산점수'
+    if any(h in l for h in GRADE_HINTS):
+        return '등급'
     return None
 
 
@@ -202,7 +203,7 @@ def flatten_headers(rows: list[list]) -> tuple[int, list[str]]:
                 last = cell
                 filled.append(cell)
             else:
-                filled.append(None)  # don't forward-fill - use None for merges
+                filled.append(last)  # forward-fill merged cells to propagate parent header context
         # Pad to max_cols
         while len(filled) < max_cols:
             filled.append(None)
@@ -2508,6 +2509,11 @@ def process_json_file(json_path: Path) -> tuple[list[dict], int | None, str | No
                     m2 = re.search(r'^(수시|정시)모집', page_text[:200], re.MULTILINE)
                     if m2:
                         page_adm = m2.group(1)
+                    else:
+                        # "정시 │ 24" style page numbers (e.g. 부산대 combined document)
+                        m3 = re.search(r'^(수시|정시)\s*[│|]\s*\d', page_text[:300], re.MULTILINE)
+                        if m3:
+                            page_adm = m3.group(1)
                 # Track last known 전형명 for pages without a section header (e.g. 경북대 정시)
                 page_ctx = find_process_context_from_text(page_text)
                 if page_ctx:
@@ -2637,8 +2643,21 @@ def main():
         univ_files.setdefault(univ, []).append(p)
 
     for univ, files in sorted(univ_files.items()):
+        # Skip 정시 files that are byte-identical to a 수시 file in the same folder
+        # (e.g. 부산대 CDN serves the same combined PDF under both URLs)
+        _sizes = {p: p.stat().st_size for p in files}
+        _susi = {p for p in files if '수시' in p.name}
+        _jeongsi = {p for p in files if '정시' in p.name}
+        _dup_jeongsi = {jf for jf in _jeongsi for sf in _susi if _sizes[jf] == _sizes[sf]}
+        if _dup_jeongsi:
+            for dup in _dup_jeongsi:
+                print(f"  SKIP {dup.name}: byte-identical to 수시 file")
+            skipped += len(_dup_jeongsi)
+
         univ_results = 0
         for json_path in files:
+            if json_path in _dup_jeongsi:
+                continue
             try:
                 records, result_year, adm_type = process_json_file(json_path)
                 if not records or not result_year:
