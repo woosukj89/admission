@@ -525,23 +525,17 @@ async def _stream_gemini(
     if browse_args:
         yield _tool_status(["browse_university_results"])
         result_str = execute_tool("browse_university_results", browse_args, store)
-        try:
-            parsed = json.loads(result_str)
-            # from_function_response requires a dict; wrap lists
-            result_dict = parsed if isinstance(parsed, dict) else {"results": parsed}
-        except Exception:
-            result_dict = {"result": result_str}
-        # Inject as if Gemini called the tool itself
-        contents.append(gtypes.Content(
-            role="model",
-            parts=[gtypes.Part.from_function_call(
-                name="browse_university_results", args=browse_args
-            )],
-        ))
+        # Inject as a system context text turn — avoids proto Struct serialization issues
+        # with None values that from_function_response cannot handle reliably.
         contents.append(gtypes.Content(
             role="user",
-            parts=[gtypes.Part.from_function_response(
-                name="browse_university_results", response=result_dict
+            parts=[gtypes.Part.from_text(
+                text=(
+                    f"[시스템 데이터] browse_university_results 결과 (university={browse_args.get('university')}, "
+                    f"admission_type={browse_args.get('admission_type')}, sort={browse_args.get('sort')}):\n"
+                    f"{result_str}\n\n"
+                    "위 데이터를 바탕으로 학과명, 전형명, 70%컷(없으면 평균점수), 경쟁률을 표 형식으로 학생에게 안내해 주세요."
+                )
             )],
         ))
         tools_called_pre = True
