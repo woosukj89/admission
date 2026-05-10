@@ -6,6 +6,7 @@ execute_tool() to dispatch function calls to AdmissionStore.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -243,6 +244,26 @@ TOOL_LIST = [
             "required": ["university", "grade", "grade_type"],
         },
     },
+    {
+        "name": "browse_university_results",
+        "description": (
+            "특정 대학교의 전형별 입결(컷)을 조회합니다. "
+            "학생이 자신의 성적 없이 특정 대학의 전형·학과 목록이나 컷을 물어볼 때 사용하세요. "
+            "예: '부산대 수시 낮은 순서로 전형 알려줘', '동국대 교과 내신컷 보여줘'"
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "university": {"type": "string", "description": "대학교 이름 (예: 부산대, 동국대학교)"},
+                "process_type": {"type": "string", "description": "전형 유형 필터: '교과', '종합', '논술', '수능'. 빈 문자열이면 전체."},
+                "admission_type": {"type": "string", "description": "'수시' 또는 '정시' (기본값 '수시')"},
+                "track": {"type": "string", "description": "계열 필터: '인문', '자연', '예체능'. 빈 문자열이면 전체."},
+                "sort": {"type": "string", "description": "'desc' = 낮은 순서(합격 쉬운 순), 'asc' = 높은 순서(어려운 순, 기본값)"},
+                "limit": {"type": "integer", "description": "최대 결과 수 (기본값 30)"},
+            },
+            "required": ["university"],
+        },
+    },
 ]
 
 # ── Tool executor ──────────────────────────────────────────────────────────────
@@ -272,6 +293,8 @@ def execute_tool(name: str, args: dict, store: AdmissionStore) -> str:
             return _list_departments(args, store)
         elif name == "check_university_feasibility":
             return _check_university_feasibility(args, store)
+        elif name == "browse_university_results":
+            return _browse_university_results(args, store)
         else:
             return json.dumps({"error": f"Unknown tool: {name}"}, ensure_ascii=False)
     except Exception as e:
@@ -794,3 +817,155 @@ def _fmt_result(r: dict) -> dict:
         "average_score": r.get("average_score"),
         "competition_rate": r.get("competition_rate"),
     }
+
+
+# ── browse_university_results helpers ─────────────────────────────────────────
+
+_SPECIAL_SUBSTRINGS = (
+    "기회균형", "고른기회", "사회통합", "사회배려", "경제배려",
+    "농어촌", "특성화고", "특성화 고", "직업계고", "마이스터고", "특성화",
+    "재직자", "만학도", "성인학습자", "자립지원",
+    "특수교육대상자", "장애인", "다문화", "북한이탈", "탈북",
+    "국가보훈", "보훈", "저소득", "차상위", "기초생활", "정원외", "재외국민",
+)
+_SPECIAL_WHITELIST = (
+    "기회의 균형", "농어촌테마", "농업생명", "농식품",
+    "기초의학", "기초과학", "기초교육",
+    "특성화대학", "특성화학부", "특성화전공", "특성화사업",
+)
+_REGIONAL_MARKERS = ("지역인재", "지역우선", "지역균형인재")
+
+
+def _bur_is_special(proc: str) -> bool:
+    for wl in _SPECIAL_WHITELIST:
+        if wl in proc:
+            return False
+    return any(sub in proc for sub in _SPECIAL_SUBSTRINGS)
+
+
+def _bur_is_regional(proc: str) -> bool:
+    return any(m in proc for m in _REGIONAL_MARKERS)
+
+
+_VALID_BIGRAMS = frozenset([
+    "학과", "학부", "공학", "경영", "교육", "국어", "영어", "전자", "전기",
+    "기계", "소프", "컴퓨", "정보", "수학", "물리", "화학", "생명", "환경",
+    "에너", "건축", "토목", "도시", "경제", "법학", "행정", "사회", "심리",
+    "역사", "문학", "언론", "미디", "디자", "체육", "예술", "음악", "미술",
+    "식품", "간호", "의학", "약학", "치의", "수의", "보건", "의료", "임상",
+    "생물", "지구", "지질", "천체", "전산", "전공", "대학", "과학", "자연",
+    "인문", "해양", "항공", "자동", "로봇", "반도", "신소", "재료", "섬유",
+    "인공", "데이", "빅데", "통신", "사이", "보안", "융합", "국제", "글로",
+    "철학", "스포", "관광", "호텔", "조경", "산림", "농업", "축산", "수산",
+    "원예", "세무", "금융", "마케", "무역", "회계", "통계", "지리", "천문",
+    "한국", "중국", "일본", "불어", "독어", "서어", "러시", "아랍", "베트",
+    "인도", "현대", "고전", "근대", "고고", "민속", "문화", "복지", "치료",
+    "재활", "특수", "유아", "초등", "청소", "노인", "여성", "가족", "아동",
+    "상담", "사범", "조리", "제과", "영양", "한식", "패션", "의류", "뷰티",
+    "헤어", "AI학", "SW학",
+    "전형", "학생", "교과", "종합", "논술", "실기", "수능", "일반", "서류",
+    "면접", "지역", "균형", "인재", "기회", "특기", "재외", "편입", "정시",
+    "수시", "기숙", "프런", "플러", "미래", "창의", "핵심", "탐구", "자기",
+    "추천", "우수", "석좌", "장학", "첨단", "혁신", "글꿈",
+])
+_GARBAGE_NAMES = frozenset([
+    "경쟁률", "예비순위", "최고", "최저", "정원(명)", "폐지",
+    "2명", "모집인원", "합격자", "충원합격", "입학인원",
+])
+_VALID_SUFFIXES = (
+    "과", "부", "학", "전", "원", "교", "대", "계", "형", "력", "류", "과학",
+    "전공", "전형", "학과", "학부", "대학", "교육", "공학", "과정", "계열",
+)
+
+
+def _bur_valid_name(name: str | None) -> bool:
+    if not name:
+        return False
+    name = name.strip()
+    name = re.sub(r'(\d+\))+$|[*†‡··∙•]+$', '', name).strip()
+    if len(name) < 2 or name in _GARBAGE_NAMES:
+        return False
+    if any('\u3131' <= ch <= '\u3163' for ch in name):
+        return False
+    if name.replace(",", "").replace(".", "").replace(" ", "").isdigit():
+        return False
+    base = name.split("[")[0].split("(")[0].strip()
+    if len(base) >= 3 and " " not in base:
+        bigrams = {base[i:i+2] for i in range(len(base) - 1)}
+        if not bigrams & _VALID_BIGRAMS:
+            return False
+        if len(base) <= 5 and not any(base.endswith(s) for s in _VALID_SUFFIXES):
+            return False
+    return True
+
+
+def _browse_university_results(args: dict, store: AdmissionStore) -> str:
+    university = args.get("university", "")
+    process_type = args.get("process_type", "")
+    admission_type = args.get("admission_type", "수시")
+    track = args.get("track", "")
+    sort = args.get("sort", "asc")
+    exclude_special = args.get("exclude_special", True)
+    exclude_regional = args.get("exclude_regional", False)
+    limit = int(args.get("limit", 30))
+
+    clauses = [
+        "d.university LIKE ?",
+        "r.admission_type = ?",
+        "(r.cut_70 IS NOT NULL OR r.average_score IS NOT NULL)",
+    ]
+    params: list = [f"%{university}%", admission_type]
+
+    if process_type:
+        clauses.append("r.process_name LIKE ?")
+        params.append(f"%{process_type}%")
+    if track:
+        clauses.append("(d.track = ? OR d.name LIKE ?)")
+        params.extend([track, f"%{track}%"])
+
+    order = "ASC" if sort == "asc" else "DESC"
+    where = " AND ".join(clauses)
+
+    with store._conn() as conn:
+        rows = conn.execute(f"""
+            SELECT d.name AS department_name, d.track,
+                   r.process_name, r.admission_type,
+                   r.cut_50, r.cut_70, r.average_score, r.competition_rate, r.result_year
+            FROM admission_result r
+            JOIN admission_department d ON d.id = r.department_id
+            WHERE {where}
+            ORDER BY COALESCE(r.cut_70, r.average_score) {order} NULLS LAST
+            LIMIT ?
+        """, params + [limit * 3]).fetchall()
+
+    results: list[dict] = []
+    seen: set[tuple] = set()
+    for row in rows:
+        dept, dept_track, proc, adm, cut50, cut70, avg, rate, year = row
+        if not _bur_valid_name(dept) or not _bur_valid_name(proc):
+            continue
+        if exclude_special and _bur_is_special(proc or ""):
+            continue
+        if exclude_regional and _bur_is_regional(proc or ""):
+            continue
+        key = (dept, proc)
+        if key in seen:
+            continue
+        seen.add(key)
+        score_label = "70%컷" if cut70 is not None else "평균(컷 미공개)"
+        results.append({
+            "department": dept,
+            "track": dept_track or "",
+            "process_name": proc,
+            "admission_type": adm,
+            "cut_50": cut50,
+            "cut_70": cut70,
+            "average_score": avg,
+            "score_label": score_label,
+            "competition_rate": rate,
+            "result_year": year,
+        })
+        if len(results) >= limit:
+            break
+
+    return json.dumps(results, ensure_ascii=False)
