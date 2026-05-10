@@ -29,8 +29,9 @@ _TOOL_LABELS: dict[str, str] = {
     "compare_universities":         "대학교를 비교 분석하고 있어요",
     "list_universities":            "대학교 목록을 조회하고 있어요",
     "search_fulltext":              "입시 정보를 검색하고 있어요",
-    "check_university_feasibility": "합격 가능성을 분석하고 있어요",
-    "list_departments":             "모집단위를 확인하고 있어요",
+    "check_university_feasibility":  "합격 가능성을 분석하고 있어요",
+    "list_departments":              "모집단위를 확인하고 있어요",
+    "browse_university_results":     "전형별 입결을 조회하고 있어요",
 }
 
 def _tool_status(tool_names: list[str]) -> str:
@@ -264,6 +265,49 @@ _PLACEHOLDER_PATTERN = re.compile(
     r'잠시만|기다려\s*주세요|찾아드릴게요|찾아보겠|알겠습니다.{0,30}전형|추천해\s*드릴게요'
 )
 
+# Pre-routing: detect "browse a university's results" intent without student grade
+_BROWSE_TRIGGER_RE = re.compile(
+    r'(?:낮은|높은)[\s]*(?:순서?|정렬)|'     # "낮은 순서", "낮은 정렬", "높은 순"
+    r'입결[\s]*(?:알려|보여|순서|정렬)|'       # "입결 알려줘", "입결 보여줘"
+    r'컷[\s]*(?:알려|낮은|높은|순서|정렬)|'    # "컷 알려줘", "컷 낮은 순"
+    r'(?:전형|학과)[\s]*(?:컷|정렬|목록|순서)|' # "전형 컷", "학과 정렬", "학과 목록"
+    r'전형[\s]+학과[\s]+알려|'                 # "전형 학과 알려줘"
+    r'수시[\s]+학과[\s]+알려|'                 # "수시 학과 알려줘"
+    r'정시[\s]+학과[\s]+알려'                  # "정시 학과 알려줘"
+)
+# Signals user is asking about themselves (has grade → use match_by_grade instead)
+_HAS_GRADE_RE = re.compile(r'[0-9]\s*등급|내신\s*[0-9]|수능\s*[0-9]|제\s*성적|내\s*성적|내신\s+[가-힣]')
+# Signals user wants personal feasibility (not a raw browse)
+_HAS_PERSONAL_RE = re.compile(r'갈\s*수\s*있|합격\s*가능|가능성|붙을\s*수|지원\s*가능')
+# Extract university name: anything followed by 대학교|대학|대 (as a word)
+_UNIV_NAME_RE = re.compile(r'([가-힣A-Za-z()（）]+(?:대학교|대학|대))')
+
+
+def _detect_browse_query(message: str) -> dict | None:
+    """Return browse_university_results kwargs if message is a grade-free browse query."""
+    msg = message.strip()
+    if not _BROWSE_TRIGGER_RE.search(msg):
+        return None
+    if _HAS_GRADE_RE.search(msg) or _HAS_PERSONAL_RE.search(msg):
+        return None  # has student grade info — let Gemini route to match_by_grade
+    m = _UNIV_NAME_RE.search(msg)
+    if not m:
+        return None
+    university = m.group(1)
+    # admission_type
+    adm = "정시" if "정시" in msg else "수시"
+    # process_type
+    proc = ""
+    if "교과" in msg:
+        proc = "교과"
+    elif "종합" in msg:
+        proc = "종합"
+    elif "논술" in msg:
+        proc = "논술"
+    # sort: "낮은" = easiest first = higher 등급 number = desc
+    sort = "desc" if "낮은" in msg else "asc"
+    return {"university": university, "admission_type": adm, "process_type": proc, "sort": sort}
+
 
 def _error_event(msg: str) -> str:
     """Format a structured error SSE event the frontend can reliably detect."""
@@ -474,8 +518,36 @@ async def _stream_gemini(
         tools=gemini_tools or [],
     )
 
+    # Pre-routing: detect browse queries and inject tool result before Gemini loop.
+    # Gemini often ignores system prompt tool routing for these queries and hallucinates.
+    # By pre-calling and injecting, we force Gemini to use real data for formatting.
+    browse_args = _detect_browse_query(message)
+    if browse_args:
+        yield _tool_status(["browse_university_results"])
+        result_str = execute_tool("browse_university_results", browse_args, store)
+        try:
+            result_dict = json.loads(result_str)
+        except Exception:
+            result_dict = {"result": result_str}
+        # Inject as if Gemini called the tool itself
+        contents.append(gtypes.Content(
+            role="model",
+            parts=[gtypes.Part.from_function_call(
+                name="browse_university_results", args=browse_args
+            )],
+        ))
+        contents.append(gtypes.Content(
+            role="user",
+            parts=[gtypes.Part.from_function_response(
+                name="browse_university_results", response=result_dict
+            )],
+        ))
+        tools_called_pre = True
+    else:
+        tools_called_pre = False
+
     try:
-        tools_called = False
+        tools_called = tools_called_pre
         for _iteration in range(MAX_TOOL_ITERATIONS):
             try:
                 response = await asyncio.wait_for(
