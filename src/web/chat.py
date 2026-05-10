@@ -526,7 +526,9 @@ async def _stream_gemini(
         yield _tool_status(["browse_university_results"])
         result_str = execute_tool("browse_university_results", browse_args, store)
         try:
-            result_dict = json.loads(result_str)
+            parsed = json.loads(result_str)
+            # from_function_response requires a dict; wrap lists
+            result_dict = parsed if isinstance(parsed, dict) else {"results": parsed}
         except Exception:
             result_dict = {"result": result_str}
         # Inject as if Gemini called the tool itself
@@ -618,7 +620,8 @@ async def _stream_gemini(
                 args = dict(fc.args) if fc.args else {}
                 result_str = execute_tool(fc.name, args, store)
                 try:
-                    result_dict = json.loads(result_str)
+                    parsed = json.loads(result_str)
+                    result_dict = parsed if isinstance(parsed, dict) else {"results": parsed}
                 except Exception:
                     result_dict = {"result": result_str}
                 fn_response_parts.append(
