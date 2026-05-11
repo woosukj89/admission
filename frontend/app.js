@@ -2,41 +2,93 @@
 
 // ── Whale mascot SVG constants ────────────────────────────────────────────────
 
-// Shared SVG body parts (string fragments reused in both constants below)
+// Shared SVG body parts (v2 — smooth bezier paths, belly at bottom, viewBox 0 0 120 100)
 const _WHALE_BODY_SVG = `
-  <path d="M80,64 C86,57 97,49 92,56 C89,61 86,62 84,63Z" fill="#3B82F6"/>
-  <path d="M80,69 C86,76 97,85 92,78 C89,73 86,71 84,70Z" fill="#3B82F6"/>
-  <ellipse cx="55" cy="70" rx="30" ry="18" fill="#60A5FA"/>
-  <circle  cx="28" cy="65" r="20" fill="#60A5FA"/>
-  <ellipse cx="33" cy="74" rx="14" ry="8" fill="#BFDBFE"/>
-  <path d="M45,86 Q38,93 51,91 Q56,88 52,84Z" fill="#3B82F6"/>
-  <ellipse cx="27" cy="47" rx="4.5" ry="2.8" fill="#2563EB"/>
-  <circle cx="21" cy="61" r="5.5" fill="white"/>
-  <circle cx="22" cy="61" r="3.5" fill="#0F172A"/>
-  <circle cx="23.5" cy="59.5" r="1.2" fill="white"/>
-  <path d="M13,70 Q18,76 27,72" stroke="#0F172A" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-  <g transform="translate(27,46) rotate(-5)">
-    <rect x="-14" y="-2" width="28" height="5" rx="1.5" fill="#1E293B"/>
-    <rect x="-10" y="-15" width="20" height="14" rx="1" fill="#1E293B"/>
-    <line x1="10" y1="-15" x2="16" y2="-3" stroke="#FBBF24" stroke-width="1.8" stroke-linecap="round"/>
-    <circle cx="16" cy="-2" r="2.8" fill="#FBBF24"/>
-    <circle cx="0" cy="-15" r="1.8" fill="#FBBF24"/>
+  <path d="M 82 52 C 90 42,108 36,104 46 C 101 52, 94 54, 88 55 Z" fill="#3B82F6"/>
+  <path d="M 82 62 C 90 72,108 80,104 70 C 101 64, 94 61, 88 60 Z" fill="#3B82F6"/>
+  <path d="M 82 52 Q 85 57, 82 62 Q 80 57 82 52 Z" fill="#2563EB"/>
+  <path d="M 83 57 C 80 44, 68 37, 55 36 C 42 35, 28 38, 18 46 C 10 52, 10 62, 18 68 C 28 76, 42 79, 55 79 C 68 79, 80 73, 83 60 Z" fill="#60A5FA"/>
+  <path d="M 40 77 C 48 80, 60 80, 70 77 C 68 73, 62 71, 55 71 C 48 71, 43 73, 40 77 Z" fill="#E0F2FE"/>
+  <path d="M 52 78 C 44 84, 38 90, 50 88 C 57 86, 60 82, 58 78 Z" fill="#3B82F6"/>
+  <ellipse cx="26" cy="43" rx="5" ry="3" fill="#2563EB"/>
+  <circle cx="22" cy="56" r="7" fill="white"/>
+  <circle cx="23" cy="56" r="4.5" fill="#0F172A"/>
+  <circle cx="25" cy="54" r="1.5" fill="white"/>
+  <path d="M 14 64 Q 20 70 30 66" stroke="#0F172A" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <g transform="translate(26,42) rotate(-6)">
+    <rect x="-16" y="-2.5" width="32" height="6" rx="2" fill="#1E293B"/>
+    <rect x="-12" y="-17" width="24" height="16" rx="1.5" fill="#1E293B"/>
+    <rect x="-12" y="-17" width="24" height="3" rx="1.5" fill="#334155" opacity="0.6"/>
+    <line x1="12" y1="-17" x2="18" y2="-4" stroke="#FBBF24" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="18" cy="-3" r="3.5" fill="#FBBF24"/>
+    <circle cx="0" cy="-17" r="2" fill="#FBBF24"/>
   </g>`;
 
-/** Static 32×32 avatar used in every AI message row */
-const WHALE_AVATAR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="32" height="32">${_WHALE_BODY_SVG}</svg>`;
+/** Static avatar used in every AI message row */
+const WHALE_AVATAR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" width="32" height="32">${_WHALE_BODY_SVG}</svg>`;
 
-/** Animated spouting whale for the loading state (accepts an optional status label) */
+/**
+ * Animated loading state: whale dives underwater, spouts, then resurfaces.
+ * Uses SVG SMIL animations (no CSS dependency) to work in all contexts.
+ */
 function whaleSpouting(statusText = '') {
   const label = statusText
     ? `<span class="text-gray-500 text-xs">${statusText}</span>`
     : '';
+  // Animation cycle: 4 s total
+  //   0–12%  at surface | 12–28%  diving | 28–72%  submerged | 72–88%  rising | 88–100% at surface
   return `<div class="flex items-center gap-2 py-0.5">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="44" height="44" style="overflow:visible;flex-shrink:0">
-      ${_WHALE_BODY_SVG}
-      <circle class="spout-drop" cx="27" cy="44" r="3.5" fill="#BAE6FD"/>
-      <circle class="spout-drop" cx="24" cy="41" r="2.5" fill="#93C5FD"/>
-      <circle class="spout-drop" cx="30" cy="39" r="3"   fill="#BAE6FD"/>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 112" width="52" height="52" style="overflow:hidden;flex-shrink:0">
+      <!-- Whale (dives and resurfaces) -->
+      <g>
+        ${_WHALE_BODY_SVG}
+        <animateTransform attributeName="transform" type="translate"
+          values="0,0; 0,0; 0,56; 0,56; 0,0; 0,0"
+          keyTimes="0; 0.12; 0.28; 0.72; 0.88; 1"
+          calcMode="spline"
+          keySplines="0 0 1 1; 0.42 0 0.58 1; 0 0 1 1; 0.42 0 0.58 1; 0 0 1 1"
+          dur="4s" repeatCount="indefinite"/>
+      </g>
+      <!-- Water surface overlay (covers diving whale) -->
+      <rect x="-5" y="83" width="130" height="30" fill="#e0f2fe"/>
+      <!-- Wave — primary -->
+      <g>
+        <path d="M-40,83 Q-30,78 -20,83 Q-10,88 0,83 Q10,78 20,83 Q30,88 40,83 Q50,78 60,83 Q70,88 80,83 Q90,78 100,83 Q110,88 120,83 Q130,78 140,83 Q150,88 160,83"
+              stroke="#38BDF8" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="0,0; -40,0" dur="1.8s" repeatCount="indefinite"/>
+      </g>
+      <!-- Wave — secondary (slower, subtle depth) -->
+      <g opacity="0.45">
+        <path d="M-20,83 Q-10,80 0,83 Q10,86 20,83 Q30,80 40,83 Q50,86 60,83 Q70,80 80,83 Q90,86 100,83 Q110,80 120,83 Q130,86 140,83"
+              stroke="#7DD3FC" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="0,0; -40,0" dur="2.6s" repeatCount="indefinite"/>
+      </g>
+      <!-- Spout drop 1 (first) — cx=26 blowhole, rising from surface -->
+      <circle cx="26" cy="76" r="4" fill="#BAE6FD">
+        <animate attributeName="opacity"
+          values="0;0;0.9;0;0" keyTimes="0;0.30;0.42;0.58;1" dur="4s" repeatCount="indefinite"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="0,0; 0,0; 0,-20; 0,-28; 0,-28"
+          keyTimes="0; 0.30; 0.42; 0.58; 1" dur="4s" repeatCount="indefinite"/>
+      </circle>
+      <!-- Spout drop 2 (slightly offset left, delayed) -->
+      <circle cx="22" cy="75" r="3" fill="#7DD3FC">
+        <animate attributeName="opacity"
+          values="0;0;0.8;0;0" keyTimes="0;0.38;0.50;0.66;1" dur="4s" repeatCount="indefinite"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="0,0; 0,0; 0,-18; 0,-26; 0,-26"
+          keyTimes="0; 0.38; 0.50; 0.66; 1" dur="4s" repeatCount="indefinite"/>
+      </circle>
+      <!-- Spout drop 3 (offset right, last) -->
+      <circle cx="31" cy="74" r="3.5" fill="#BAE6FD">
+        <animate attributeName="opacity"
+          values="0;0;0.7;0;0" keyTimes="0;0.46;0.58;0.74;1" dur="4s" repeatCount="indefinite"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="0,0; 0,0; 0,-16; 0,-24; 0,-24"
+          keyTimes="0; 0.46; 0.58; 0.74; 1" dur="4s" repeatCount="indefinite"/>
+      </circle>
     </svg>
     ${label}
   </div>`;
