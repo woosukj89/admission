@@ -2,93 +2,144 @@
 
 // ── Whale mascot SVG constants ────────────────────────────────────────────────
 
-// Shared SVG body parts (v2 — smooth bezier paths, belly at bottom, viewBox 0 0 120 100)
+// Whale mascot v3 — 🐳-inspired, viewBox 0 0 200 160, high-detail bezier paths
+// Body center ~(88,96), tail fans right, head left, blowhole top-left
 const _WHALE_BODY_SVG = `
-  <path d="M 82 52 C 90 42,108 36,104 46 C 101 52, 94 54, 88 55 Z" fill="#3B82F6"/>
-  <path d="M 82 62 C 90 72,108 80,104 70 C 101 64, 94 61, 88 60 Z" fill="#3B82F6"/>
-  <path d="M 82 52 Q 85 57, 82 62 Q 80 57 82 52 Z" fill="#2563EB"/>
-  <path d="M 83 57 C 80 44, 68 37, 55 36 C 42 35, 28 38, 18 46 C 10 52, 10 62, 18 68 C 28 76, 42 79, 55 79 C 68 79, 80 73, 83 60 Z" fill="#60A5FA"/>
-  <path d="M 40 77 C 48 80, 60 80, 70 77 C 68 73, 62 71, 55 71 C 48 71, 43 73, 40 77 Z" fill="#E0F2FE"/>
-  <path d="M 52 78 C 44 84, 38 90, 50 88 C 57 86, 60 82, 58 78 Z" fill="#3B82F6"/>
-  <ellipse cx="26" cy="43" rx="5" ry="3" fill="#2563EB"/>
-  <circle cx="22" cy="56" r="7" fill="white"/>
-  <circle cx="23" cy="56" r="4.5" fill="#0F172A"/>
-  <circle cx="25" cy="54" r="1.5" fill="white"/>
-  <path d="M 14 64 Q 20 70 30 66" stroke="#0F172A" stroke-width="2" fill="none" stroke-linecap="round"/>
-  <g transform="translate(26,42) rotate(-6)">
-    <rect x="-16" y="-2.5" width="32" height="6" rx="2" fill="#1E293B"/>
-    <rect x="-12" y="-17" width="24" height="16" rx="1.5" fill="#1E293B"/>
-    <rect x="-12" y="-17" width="24" height="3" rx="1.5" fill="#334155" opacity="0.6"/>
-    <line x1="12" y1="-17" x2="18" y2="-4" stroke="#FBBF24" stroke-width="2" stroke-linecap="round"/>
-    <circle cx="18" cy="-3" r="3.5" fill="#FBBF24"/>
-    <circle cx="0" cy="-17" r="2" fill="#FBBF24"/>
+  <!-- Tail fan — upper lobe -->
+  <path d="M 148 82 C 158 62, 188 50, 182 68 C 178 78, 166 82, 156 84 Z" fill="#3B82F6"/>
+  <!-- Tail fan — lower lobe -->
+  <path d="M 148 106 C 158 126, 188 140, 182 122 C 178 112, 166 108, 156 104 Z" fill="#3B82F6"/>
+  <!-- Tail notch -->
+  <path d="M 148 82 Q 153 94, 148 106 Q 145 94 148 82 Z" fill="#2563EB"/>
+  <!-- Body — plump oval -->
+  <path d="M 150 94 C 148 68, 128 50, 100 46 C 72 42, 44 50, 28 66
+           C 14 80, 14 108, 28 122 C 44 138, 72 146, 100 146
+           C 128 146, 148 130, 150 106 Z" fill="#60A5FA"/>
+  <!-- Belly patch — bottom of body -->
+  <path d="M 54 140 C 70 150, 100 152, 126 140
+           C 124 130, 112 124, 100 124
+           C 88 124, 68 128, 54 140 Z" fill="#E0F2FE"/>
+  <!-- Pectoral flipper -->
+  <path d="M 90 140 C 76 154, 60 164, 78 160 C 90 156, 98 148, 96 140 Z" fill="#3B82F6"/>
+  <!-- Blowhole -->
+  <ellipse cx="42" cy="60" rx="9" ry="5.5" fill="#2563EB"/>
+  <!-- Static spout (small, visible in avatar) -->
+  <ellipse cx="40" cy="50" rx="4" ry="6" fill="#BAE6FD" opacity="0.85"/>
+  <ellipse cx="46" cy="44" rx="3" ry="5" fill="#7DD3FC" opacity="0.7"/>
+  <ellipse cx="36" cy="42" rx="3" ry="4.5" fill="#BAE6FD" opacity="0.6"/>
+  <!-- Eye — large and cute -->
+  <circle cx="36" cy="88" r="13" fill="white"/>
+  <circle cx="38" cy="88" r="8.5" fill="#0F172A"/>
+  <circle cx="41" cy="84" r="3" fill="white"/>
+  <!-- Smile -->
+  <path d="M 20 104 Q 32 118 50 112" stroke="#0F172A" stroke-width="3.5" fill="none"
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Mortarboard hat -->
+  <g transform="translate(42,56) rotate(-6)">
+    <rect x="-26" y="-4" width="52" height="9" rx="3" fill="#1E293B"/>
+    <rect x="-20" y="-26" width="40" height="24" rx="2.5" fill="#1E293B"/>
+    <rect x="-20" y="-26" width="40" height="5" rx="2.5" fill="#334155" opacity="0.6"/>
+    <line x1="20" y1="-26" x2="30" y2="-6" stroke="#FBBF24" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="30" cy="-4" r="5.5" fill="#FBBF24"/>
+    <circle cx="0"  cy="-26" r="3.5" fill="#FBBF24"/>
   </g>`;
 
 /** Static avatar used in every AI message row */
-const WHALE_AVATAR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" width="32" height="32">${_WHALE_BODY_SVG}</svg>`;
+const WHALE_AVATAR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" width="36" height="36">${_WHALE_BODY_SVG}</svg>`;
 
 /**
- * Animated loading state: whale dives underwater, spouts, then resurfaces.
- * Uses SVG SMIL animations (no CSS dependency) to work in all contexts.
+ * Animated loading state: whale dives underwater → spouts fan spray → resurfaces.
+ * SMIL-only animations, no CSS required.
+ * Cycle: 4.5 s  |  0–12% surface · 12–28% dive · 28–72% submerged · 72–88% rise · 88–100% surface
  */
 function whaleSpouting(statusText = '') {
   const label = statusText
     ? `<span class="text-gray-500 text-xs">${statusText}</span>`
     : '';
-  // Animation cycle: 4 s total
-  //   0–12%  at surface | 12–28%  diving | 28–72%  submerged | 72–88%  rising | 88–100% at surface
+  // Blowhole sits at (42, 60) in whale coords. Diving 78 SVG units → blowhole at y≈138 (below water).
+  // Spout drops are fixed at water surface (y≈128) and rise upward.
   return `<div class="flex items-center gap-2 py-0.5">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 112" width="52" height="52" style="overflow:hidden;flex-shrink:0">
-      <!-- Whale (dives and resurfaces) -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 190" width="58" height="58" style="overflow:hidden;flex-shrink:0">
+      <!-- Whale group (dives and resurfaces) -->
       <g>
         ${_WHALE_BODY_SVG}
         <animateTransform attributeName="transform" type="translate"
-          values="0,0; 0,0; 0,56; 0,56; 0,0; 0,0"
+          values="0,0; 0,0; 0,78; 0,78; 0,0; 0,0"
           keyTimes="0; 0.12; 0.28; 0.72; 0.88; 1"
           calcMode="spline"
           keySplines="0 0 1 1; 0.42 0 0.58 1; 0 0 1 1; 0.42 0 0.58 1; 0 0 1 1"
-          dur="4s" repeatCount="indefinite"/>
+          dur="4.5s" repeatCount="indefinite"/>
       </g>
-      <!-- Water surface overlay (covers diving whale) -->
-      <rect x="-5" y="83" width="130" height="30" fill="#e0f2fe"/>
-      <!-- Wave — primary -->
+
+      <!-- Water surface overlay (masks diving whale) -->
+      <rect x="-5" y="138" width="210" height="55" fill="#dbeafe"/>
+
+      <!-- Wave — primary (bigger amplitude) -->
       <g>
-        <path d="M-40,83 Q-30,78 -20,83 Q-10,88 0,83 Q10,78 20,83 Q30,88 40,83 Q50,78 60,83 Q70,88 80,83 Q90,78 100,83 Q110,88 120,83 Q130,78 140,83 Q150,88 160,83"
-              stroke="#38BDF8" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M-60,138 Q-45,128 -30,138 Q-15,148 0,138 Q15,128 30,138 Q45,148 60,138
+                 Q75,128 90,138 Q105,148 120,138 Q135,128 150,138 Q165,148 180,138
+                 Q195,128 210,138 Q225,148 240,138 Q255,128 270,138"
+              stroke="#38BDF8" stroke-width="3" fill="none" stroke-linecap="round"/>
         <animateTransform attributeName="transform" type="translate"
-          values="0,0; -40,0" dur="1.8s" repeatCount="indefinite"/>
+          values="0,0; -60,0" dur="2s" repeatCount="indefinite"/>
       </g>
-      <!-- Wave — secondary (slower, subtle depth) -->
-      <g opacity="0.45">
-        <path d="M-20,83 Q-10,80 0,83 Q10,86 20,83 Q30,80 40,83 Q50,86 60,83 Q70,80 80,83 Q90,86 100,83 Q110,80 120,83 Q130,86 140,83"
-              stroke="#7DD3FC" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <!-- Wave — secondary -->
+      <g opacity="0.5">
+        <path d="M-40,138 Q-27,133 -14,138 Q-1,143 12,138 Q25,133 38,138 Q51,143 64,138
+                 Q77,133 90,138 Q103,143 116,138 Q129,133 142,138 Q155,143 168,138
+                 Q181,133 194,138 Q207,143 220,138"
+              stroke="#7DD3FC" stroke-width="2" fill="none" stroke-linecap="round"/>
         <animateTransform attributeName="transform" type="translate"
-          values="0,0; -40,0" dur="2.6s" repeatCount="indefinite"/>
+          values="0,0; -60,0" dur="3.2s" repeatCount="indefinite"/>
       </g>
-      <!-- Spout drop 1 (first) — cx=26 blowhole, rising from surface -->
-      <circle cx="26" cy="76" r="4" fill="#BAE6FD">
-        <animate attributeName="opacity"
-          values="0;0;0.9;0;0" keyTimes="0;0.30;0.42;0.58;1" dur="4s" repeatCount="indefinite"/>
+
+      <!-- Spout fan spray — 5 drops in a fan pattern, timed for submerged phase -->
+      <!-- Drop 1: center, tallest -->
+      <circle cx="42" cy="122" r="6" fill="#BAE6FD">
+        <animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.29;0.42;0.58;1" dur="4.5s" repeatCount="indefinite"/>
         <animateTransform attributeName="transform" type="translate"
-          values="0,0; 0,0; 0,-20; 0,-28; 0,-28"
-          keyTimes="0; 0.30; 0.42; 0.58; 1" dur="4s" repeatCount="indefinite"/>
+          values="0,0; 0,0; 0,-32; 0,-42; 0,-42"
+          keyTimes="0; 0.29; 0.42; 0.58; 1" dur="4.5s" repeatCount="indefinite"/>
       </circle>
-      <!-- Spout drop 2 (slightly offset left, delayed) -->
-      <circle cx="22" cy="75" r="3" fill="#7DD3FC">
-        <animate attributeName="opacity"
-          values="0;0;0.8;0;0" keyTimes="0;0.38;0.50;0.66;1" dur="4s" repeatCount="indefinite"/>
+      <!-- Drop 2: slight left -->
+      <circle cx="34" cy="124" r="5" fill="#7DD3FC">
+        <animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.33;0.46;0.62;1" dur="4.5s" repeatCount="indefinite"/>
         <animateTransform attributeName="transform" type="translate"
-          values="0,0; 0,0; 0,-18; 0,-26; 0,-26"
-          keyTimes="0; 0.38; 0.50; 0.66; 1" dur="4s" repeatCount="indefinite"/>
+          values="0,0; 0,0; -6,-26; -8,-36; -8,-36"
+          keyTimes="0; 0.33; 0.46; 0.62; 1" dur="4.5s" repeatCount="indefinite"/>
       </circle>
-      <!-- Spout drop 3 (offset right, last) -->
-      <circle cx="31" cy="74" r="3.5" fill="#BAE6FD">
-        <animate attributeName="opacity"
-          values="0;0;0.7;0;0" keyTimes="0;0.46;0.58;0.74;1" dur="4s" repeatCount="indefinite"/>
+      <!-- Drop 3: slight right -->
+      <circle cx="52" cy="124" r="5" fill="#7DD3FC">
+        <animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.33;0.46;0.62;1" dur="4.5s" repeatCount="indefinite"/>
         <animateTransform attributeName="transform" type="translate"
-          values="0,0; 0,0; 0,-16; 0,-24; 0,-24"
-          keyTimes="0; 0.46; 0.58; 0.74; 1" dur="4s" repeatCount="indefinite"/>
+          values="0,0; 0,0; 6,-26; 8,-36; 8,-36"
+          keyTimes="0; 0.33; 0.46; 0.62; 1" dur="4.5s" repeatCount="indefinite"/>
       </circle>
+      <!-- Drop 4: far left -->
+      <circle cx="28" cy="126" r="4" fill="#BAE6FD">
+        <animate attributeName="opacity" values="0;0;0.8;0;0" keyTimes="0;0.37;0.50;0.66;1" dur="4.5s" repeatCount="indefinite"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="0,0; 0,0; -12,-18; -16,-28; -16,-28"
+          keyTimes="0; 0.37; 0.50; 0.66; 1" dur="4.5s" repeatCount="indefinite"/>
+      </circle>
+      <!-- Drop 5: far right -->
+      <circle cx="56" cy="126" r="4" fill="#BAE6FD">
+        <animate attributeName="opacity" values="0;0;0.8;0;0" keyTimes="0;0.37;0.50;0.66;1" dur="4.5s" repeatCount="indefinite"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="0,0; 0,0; 12,-18; 16,-28; 16,-28"
+          keyTimes="0; 0.37; 0.50; 0.66; 1" dur="4.5s" repeatCount="indefinite"/>
+      </circle>
+
+      <!-- Spray lines radiating from blowhole position at water surface -->
+      <line x1="42" y1="130" x2="42" y2="108" stroke="#BAE6FD" stroke-width="2.5" stroke-linecap="round" opacity="0">
+        <animate attributeName="opacity" values="0;0;0.6;0;0" keyTimes="0;0.28;0.38;0.54;1" dur="4.5s" repeatCount="indefinite"/>
+      </line>
+      <line x1="42" y1="130" x2="28" y2="110" stroke="#7DD3FC" stroke-width="2" stroke-linecap="round" opacity="0">
+        <animate attributeName="opacity" values="0;0;0.5;0;0" keyTimes="0;0.30;0.40;0.56;1" dur="4.5s" repeatCount="indefinite"/>
+      </line>
+      <line x1="42" y1="130" x2="56" y2="110" stroke="#7DD3FC" stroke-width="2" stroke-linecap="round" opacity="0">
+        <animate attributeName="opacity" values="0;0;0.5;0;0" keyTimes="0;0.30;0.40;0.56;1" dur="4.5s" repeatCount="indefinite"/>
+      </line>
     </svg>
     ${label}
   </div>`;
@@ -785,7 +836,7 @@ async function sendMessage() {
       state.history.push({ role: 'model', parts: [fullText] });
       _saveHistory();
     } else if (!errorHandled) {
-      _showRetryBubble(aiBubble, text, '응답을 받지 못했습니다.');
+      _showRetryBubble(aiBubble, text, '응답을 받지 못했습니다. 잠시 후 다시 시도해 주세요.');
     }
 
   } catch (err) {
@@ -834,7 +885,7 @@ function createAIBubble() {
   wrapper.dataset.role = 'model';
 
   const avatar = document.createElement('div');
-  avatar.className = 'w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0 overflow-hidden';
+  avatar.className = 'w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center shrink-0 overflow-hidden';
   avatar.innerHTML = WHALE_AVATAR_SVG;
 
   const bubble = document.createElement('div');
@@ -850,7 +901,7 @@ function createAIBubble() {
 
 function _showRetryBubble(bubble, originalText, reason) {
   bubble.innerHTML = `
-    <p class="text-orange-500 text-sm mb-2">⚠️ ${escapeHtml(reason)} 잠시 후 다시 시도해 주세요.</p>
+    <p class="text-orange-500 text-sm mb-2">⚠️ ${escapeHtml(reason)}</p>
     <button onclick="retryMessage(${JSON.stringify(originalText).replace(/"/g, '&quot;')}, this)"
             class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg transition">
       🔄 다시 시도
