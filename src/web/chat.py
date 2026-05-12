@@ -41,10 +41,13 @@ def _tool_status(tool_names: list[str]) -> str:
     return _status(" · ".join(labels))
 
 CLAUDE_MODEL = "claude-haiku-4-5-20251001"
-GEMINI_MODEL = "gemini-3.1-flash-lite"
+GEMINI_MODEL = "gemini-3.1-flash-lite"        # primary (free tier)
+GEMINI_FALLBACK_MODEL = "gemini-2.5-flash"    # fallback on 503
 CLAUDE_TIMEOUT = 60.0
 GEMINI_TIMEOUT = 60.0
 INTER_CALL_DELAY = 1.0
+_GEMINI_MAX_RETRIES = 3
+_GEMINI_RETRY_DELAYS = [1.0, 2.0, 4.0]  # exponential backoff (seconds)
 _PROJECT_ROOT = Path(__file__).parent.parent.parent
 
 
@@ -505,6 +508,37 @@ async def _stream_claude(
         yield "data: [DONE]\n\n"
 
 
+def _is_503(err: Exception) -> bool:
+    s = str(err)
+    return "503" in s or "unavailable" in s.lower() or "overloaded" in s.lower() or "high demand" in s.lower()
+
+
+async def _gemini_generate(client, contents, config, *, use_fallback: bool = False):
+    """Call generate_content with retry + model fallback on 503."""
+    model = GEMINI_FALLBACK_MODEL if use_fallback else GEMINI_MODEL
+    last_err: Exception | None = None
+    for attempt, delay in enumerate([0.0] + _GEMINI_RETRY_DELAYS):
+        if delay:
+            await asyncio.sleep(delay)
+        try:
+            return await asyncio.wait_for(
+                asyncio.to_thread(client.models.generate_content, model=model, contents=contents, config=config),
+                timeout=GEMINI_TIMEOUT,
+            )
+        except asyncio.TimeoutError:
+            raise
+        except Exception as e:
+            last_err = e
+            if _is_503(e):
+                if attempt < len(_GEMINI_RETRY_DELAYS):
+                    continue  # retry same model
+                if not use_fallback:
+                    # Switch to fallback model and retry from scratch
+                    return await _gemini_generate(client, contents, config, use_fallback=True)
+            raise
+    raise last_err
+
+
 async def _stream_gemini(
     message: str, history: list[ChatMessage], system_prompt: str = SYSTEM_PROMPT
 ) -> AsyncGenerator[str, None]:
@@ -581,15 +615,7 @@ async def _stream_gemini(
         tools_called = tools_called_pre
         for _iteration in range(MAX_TOOL_ITERATIONS):
             try:
-                response = await asyncio.wait_for(
-                    asyncio.to_thread(
-                        client.models.generate_content,
-                        model=GEMINI_MODEL,
-                        contents=contents,
-                        config=config,
-                    ),
-                    timeout=GEMINI_TIMEOUT,
-                )
+                response = await _gemini_generate(client, contents, config)
             except asyncio.TimeoutError:
                 yield _error_event("응답 시간이 초과되었습니다. 다시 시도해 주세요.")
                 yield "data: [DONE]\n\n"
@@ -667,17 +693,10 @@ async def _stream_gemini(
             return
         try:
             config_no_tools = gtypes.GenerateContentConfig(system_instruction=system_prompt)
-            final_resp = await asyncio.wait_for(
-                asyncio.to_thread(
-                    client.models.generate_content,
-                    model=GEMINI_MODEL,
-                    contents=contents + [gtypes.Content(role="user", parts=[
-                        gtypes.Part.from_text(text="지금까지의 조회 결과를 바탕으로 학생에게 최종 답변을 작성해 주세요.")
-                    ])],
-                    config=config_no_tools,
-                ),
-                timeout=GEMINI_TIMEOUT,
-            )
+            final_contents = contents + [gtypes.Content(role="user", parts=[
+                gtypes.Part.from_text(text="지금까지의 조회 결과를 바탕으로 학생에게 최종 답변을 작성해 주세요.")
+            ])]
+            final_resp = await _gemini_generate(client, final_contents, config_no_tools)
             text = final_resp.text or ""
             if not text:
                 yield _error_event("응답 생성에 실패했습니다. 다시 시도해 주세요.")
