@@ -1,104 +1,19 @@
 // Admission AI Chat Client
 
-// ── Whale mascot (PNG-based) ──────────────────────────────────────────────────
-// whale-avatar.png = whale.png with white background removed, served at /whale-avatar.png
+// ── Whale mascot (SVG-based) ──────────────────────────────────────────────────
+// whale-mascot.svg = vectorized SVG from whale.png (vtracer, BFS bg removal), served at /whale-mascot.svg
 
 /** Static avatar used in every AI message row */
-const WHALE_AVATAR_SVG = `<img src="/whale-avatar.png" style="width:100%;height:100%;object-fit:contain;" alt="">`;
+const WHALE_AVATAR_SVG = `<img src="/whale-mascot.svg" style="width:100%;height:100%;object-fit:contain;" alt="">`;
 
-/**
- * Animated loading: whale dives below water surface, fan-spout appears, resurfaces.
- * Uses SVG <image> with SMIL for the PNG + SMIL-animated water/spout elements.
- * Cycle 4.5 s: 0–12% surface · 12–28% dive+fade · 28–72% submerged · 72–88% rise · 88–100% surface
- *
- * PNG layout in 80×80 viewBox coords:
- *   hat top ≈ y=4, head centre ≈ y=36, belly ≈ y=65, blowhole area ≈ x=27
- * Water line at y=68. Dive = 36 units → head centre moves to y=72 (submerged). ✓
- * Whale fades to opacity 0.12 while submerged (refraction illusion).
- */
 function whaleSpouting(statusText = '') {
   const label = statusText
     ? `<span class="text-gray-500 text-xs">${statusText}</span>`
     : '';
   return `<div class="flex items-center gap-2 py-0.5">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 90" width="68" height="76"
-         style="overflow:hidden;display:block;flex-shrink:0">
-
-      <!-- Whale PNG (dives and fades) -->
-      <image href="/whale-avatar.png" x="0" y="0" width="80" height="80">
-        <animateTransform attributeName="transform" type="translate"
-          values="0,0; 0,0; 0,36; 0,36; 0,0; 0,0"
-          keyTimes="0; 0.12; 0.28; 0.72; 0.88; 1"
-          calcMode="spline"
-          keySplines="0 0 1 1; 0.42 0 0.58 1; 0 0 1 1; 0.42 0 0.58 1; 0 0 1 1"
-          dur="4.5s" repeatCount="indefinite"/>
-        <animate attributeName="opacity"
-          values="1; 1; 0.12; 0.12; 1; 1"
-          keyTimes="0; 0.14; 0.30; 0.70; 0.86; 1"
-          calcMode="spline"
-          keySplines="0 0 1 1; 0.4 0 0.6 1; 0 0 1 1; 0.4 0 0.6 1; 0 0 1 1"
-          dur="4.5s" repeatCount="indefinite"/>
-      </image>
-
-      <!-- Water surface overlay -->
-      <rect x="-2" y="68" width="84" height="24" fill="#dbeafe"/>
-
-      <!-- Wave — primary -->
-      <g>
-        <path d="M-32,68 Q-24,63 -16,68 Q-8,73 0,68 Q8,63 16,68 Q24,73 32,68
-                 Q40,63 48,68 Q56,73 64,68 Q72,63 80,68 Q88,73 96,68 Q104,63 112,68"
-              stroke="#38BDF8" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <animateTransform attributeName="transform" type="translate"
-          values="0,0; -32,0" dur="1.8s" repeatCount="indefinite"/>
-      </g>
-      <!-- Wave — secondary -->
-      <g opacity="0.5">
-        <path d="M-16,68 Q-8,65 0,68 Q8,71 16,68 Q24,65 32,68 Q40,71 48,68
-                 Q56,65 64,68 Q72,71 80,68 Q88,65 96,68 Q104,71 112,68"
-              stroke="#7DD3FC" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <animateTransform attributeName="transform" type="translate"
-          values="0,0; -32,0" dur="2.6s" repeatCount="indefinite"/>
-      </g>
-
-      <!-- Spout fan — 5 drops, appear during submerged phase (28–72%) -->
-      <!-- Anchored near x=27 (blowhole area), starting just above water line -->
-      <circle cx="27" cy="60" r="5" fill="#BAE6FD">
-        <animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.29;0.42;0.58;1" dur="4.5s" repeatCount="indefinite"/>
-        <animateTransform attributeName="transform" type="translate"
-          values="0,0;0,0;0,-24;0,-32;0,-32" keyTimes="0;0.29;0.42;0.58;1" dur="4.5s" repeatCount="indefinite"/>
-      </circle>
-      <circle cx="20" cy="62" r="4" fill="#7DD3FC">
-        <animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.33;0.46;0.62;1" dur="4.5s" repeatCount="indefinite"/>
-        <animateTransform attributeName="transform" type="translate"
-          values="0,0;0,0;-5,-18;-7,-26;-7,-26" keyTimes="0;0.33;0.46;0.62;1" dur="4.5s" repeatCount="indefinite"/>
-      </circle>
-      <circle cx="34" cy="62" r="4" fill="#7DD3FC">
-        <animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.33;0.46;0.62;1" dur="4.5s" repeatCount="indefinite"/>
-        <animateTransform attributeName="transform" type="translate"
-          values="0,0;0,0;5,-18;7,-26;7,-26" keyTimes="0;0.33;0.46;0.62;1" dur="4.5s" repeatCount="indefinite"/>
-      </circle>
-      <circle cx="14" cy="63" r="3" fill="#BAE6FD">
-        <animate attributeName="opacity" values="0;0;0.8;0;0" keyTimes="0;0.37;0.50;0.66;1" dur="4.5s" repeatCount="indefinite"/>
-        <animateTransform attributeName="transform" type="translate"
-          values="0,0;0,0;-10,-14;-14,-20;-14,-20" keyTimes="0;0.37;0.50;0.66;1" dur="4.5s" repeatCount="indefinite"/>
-      </circle>
-      <circle cx="40" cy="63" r="3" fill="#BAE6FD">
-        <animate attributeName="opacity" values="0;0;0.8;0;0" keyTimes="0;0.37;0.50;0.66;1" dur="4.5s" repeatCount="indefinite"/>
-        <animateTransform attributeName="transform" type="translate"
-          values="0,0;0,0;10,-14;14,-20;14,-20" keyTimes="0;0.37;0.50;0.66;1" dur="4.5s" repeatCount="indefinite"/>
-      </circle>
-
-      <!-- Spray lines -->
-      <line x1="27" y1="65" x2="27" y2="46" stroke="#BAE6FD" stroke-width="2.5" stroke-linecap="round" opacity="0">
-        <animate attributeName="opacity" values="0;0;0.65;0;0" keyTimes="0;0.28;0.38;0.54;1" dur="4.5s" repeatCount="indefinite"/>
-      </line>
-      <line x1="27" y1="65" x2="16" y2="50" stroke="#7DD3FC" stroke-width="2" stroke-linecap="round" opacity="0">
-        <animate attributeName="opacity" values="0;0;0.5;0;0" keyTimes="0;0.30;0.40;0.56;1" dur="4.5s" repeatCount="indefinite"/>
-      </line>
-      <line x1="27" y1="65" x2="38" y2="50" stroke="#7DD3FC" stroke-width="2" stroke-linecap="round" opacity="0">
-        <animate attributeName="opacity" values="0;0;0.5;0;0" keyTimes="0;0.30;0.40;0.56;1" dur="4.5s" repeatCount="indefinite"/>
-      </line>
-    </svg>
+    <video src="/whale%20animation.mp4" autoplay loop muted playsinline
+           width="68" height="68"
+           style="display:block;flex-shrink:0;object-fit:contain;"></video>
     ${label}
   </div>`;
 }
