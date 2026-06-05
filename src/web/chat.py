@@ -41,6 +41,7 @@ def _tool_status(tool_names: list[str]) -> str:
     return _status(" · ".join(labels))
 
 CLAUDE_MODEL = "claude-haiku-4-5-20251001"
+CLAUDE_SONNET_MODEL = "claude-sonnet-4-6"     # Sonnet fallback in hybrid Option 1
 GEMINI_MODEL = "gemini-3.1-flash-lite"        # primary (free tier)
 GEMINI_FALLBACK_MODEL = "gemini-2.5-flash"    # fallback on 503
 CLAUDE_TIMEOUT = 60.0
@@ -49,6 +50,10 @@ INTER_CALL_DELAY = 1.0
 _GEMINI_MAX_RETRIES = 3
 _GEMINI_RETRY_DELAYS = [1.0, 2.0, 4.0]  # exponential backoff (seconds)
 _PROJECT_ROOT = Path(__file__).parent.parent.parent
+
+# Edge Config cache: key → (value, monotonic_timestamp)
+_edge_config_cache: dict[str, tuple[object, float]] = {}
+_EDGE_CONFIG_TTL = 60.0  # seconds
 
 
 def _build_gemini_tools():
@@ -163,10 +168,18 @@ SYSTEM_PROMPT = """당신은 한국 대학 입시 전문 AI 상담사입니다. 
   예시: "내신 3등급 부산대 교과전형 학과 알려줘"
   → match_by_grade(grade=3.0, university="부산대", process_type="교과")
 
-■ 특수전형/기회균형전형 문의 → exclude_special=False 로 조회 후 AI가 필터링
+■ 특수전형/기회균형전형 문의 → process_name_contains 파라미터로 직접 필터링
   트리거: 다문화, 기회균형, 고른기회, 사회배려, 농어촌, 특성화고, 저소득, 국가보훈, 장애인, 재직자, 만학도 등
-  → match_by_grade(..., exclude_special=False) 또는 search_programs(...) 호출
-  → 결과 중 요청한 전형 유형에 해당하는 항목만 필터링하여 안내
+  → match_by_grade(..., process_name_contains="농어촌") 형식으로 반드시 키워드 필터를 사용하세요.
+  키워드 매핑 예시:
+    "농어촌", "농촌", "농어촌학생" → process_name_contains="농어촌"
+    "기회균형" → process_name_contains="기회균형"
+    "고른기회" → process_name_contains="고른기회"
+    "사회배려", "사회통합" → process_name_contains="사회배려"
+    "특성화고" → process_name_contains="특성화고"
+    "국가보훈" → process_name_contains="보훈"
+  ★ 절대 규칙: 특수전형을 물어볼 때 process_name_contains 없이 일반 match_by_grade만 호출하지 마세요.
+    그렇게 하면 일반전형과 특수전형이 섞여서 잘못된 결과가 나옵니다.
   주의: 특수전형은 지원자격이 매우 중요하므로 자격 조건(모집요강)도 함께 안내하세요.
   주의: 특수전형은 일반전형보다 컷이 낮을 수 있으나, 자격 조건 충족이 전제입니다.
 
@@ -246,7 +259,14 @@ SYSTEM_PROMPT = """당신은 한국 대학 입시 전문 AI 상담사입니다. 
 - process_category = "논술" → 논술 실력이 변수, 논술전형 추천
 - process_category = "기타" 또는 데이터 불명확 → 학과 특성과 학생 강점으로 추론하여 추천
 - 상향 학교: 학종 추천 (내신 외 비교과·면접으로 역전 가능)
-- 안정 학교: 교과 추천 (내신 점수로 안정적 합격 확보)"""
+- 안정 학교: 교과 추천 (내신 점수로 안정적 합격 확보)
+
+**빈 버킷 처리 (절대 규칙):**
+도구 결과에서 `안정`, `추천`, `도전` 리스트 중 하나가 비어있거나 1개 미만이면:
+- 해당 버킷 섹션에 실제 학교 데이터 없이 구체적인 학교명·컷 수치를 절대 만들어내지 마세요.
+- 도구 결과의 `warning_안정` / `warning_추천` / `warning_도전` 메시지를 학생에게 그대로 안내하세요.
+- 예: "이 구간의 입시결과 데이터가 부족합니다. 지역이나 학과 조건을 알려주시면 더 정확히 찾아드릴게요."
+- 제공된 버킷(비어 있지 않은 것)의 학교만 상세히 설명하세요."""
 
 MAX_TOOL_ITERATIONS = 5
 MAX_HISTORY_TURNS = 20
@@ -386,11 +406,51 @@ def _status(msg: str) -> str:
     return f"data: {json.dumps({'status': msg}, ensure_ascii=False)}\n\n"
 
 
-async def _stream_claude(
+async def _get_anthropic_enabled() -> bool:
+    """Read `anthropic_enabled` from Vercel Edge Config with 60s cache.
+
+    Returns False when EDGE_CONFIG is unset (local dev → Option 2 default).
+    """
+    import time
+    import urllib.request
+
+    key = "anthropic_enabled"
+    now = time.monotonic()
+    if key in _edge_config_cache:
+        val, ts = _edge_config_cache[key]
+        if now - ts < _EDGE_CONFIG_TTL:
+            return bool(val)
+
+    edge_config = os.environ.get("EDGE_CONFIG", "").strip()
+    if not edge_config:
+        return False
+
+    m = re.match(r"(https://edge-config\.vercel\.com/[^?]+)\?token=(.+)", edge_config)
+    if not m:
+        return False
+    base_url, token = m.group(1), m.group(2)
+
+    try:
+        def _fetch() -> object:
+            req = urllib.request.Request(
+                f"{base_url}/item/{key}",
+                headers={"Authorization": f"Bearer {token}"},
+            )
+            with urllib.request.urlopen(req, timeout=5) as resp:
+                return json.loads(resp.read())
+        val = await asyncio.to_thread(_fetch)
+        result = bool(val)
+    except Exception:
+        result = False
+
+    _edge_config_cache[key] = (result, now)
+    return result
+
+
+async def _stream_hybrid(
     message: str, history: list[ChatMessage], system_prompt: str = SYSTEM_PROMPT
 ) -> AsyncGenerator[str, None]:
-    """Run Claude tool-use loop then stream final text response via SSE."""
-
+    """Option 1: Haiku orchestrates tool calls, Gemini generates final response (Sonnet fallback)."""
     yield _status("답변을 준비하고 있어요...")
 
     api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
@@ -399,10 +459,24 @@ async def _stream_claude(
         yield "data: [DONE]\n\n"
         return
 
+    gemini_api_key = os.environ.get("GEMINI_API_KEY", "").strip()
+    if not gemini_api_key:
+        yield _error_event("서버 설정 오류: GEMINI_API_KEY가 설정되지 않았습니다.")
+        yield "data: [DONE]\n\n"
+        return
+
     try:
-        client = anthropic.AsyncAnthropic(api_key=api_key)
+        claude_client = anthropic.AsyncAnthropic(api_key=api_key)
     except Exception as e:
         yield _error_event(f"API 초기화 오류: {e}")
+        yield "data: [DONE]\n\n"
+        return
+
+    try:
+        from google import genai as ggenai
+        from google.genai import types as gtypes
+    except ImportError:
+        yield _error_event("서버 설정 오류: google-genai 패키지가 설치되지 않았습니다.")
         yield "data: [DONE]\n\n"
         return
 
@@ -414,14 +488,17 @@ async def _stream_claude(
         yield "data: [DONE]\n\n"
         return
 
+    # ── Phase 1: Haiku tool-use loop ───────────────────────────────────────────
+    # Collect (tool_name, input_dict, result_str) for context injection into Gemini
+    tool_calls_data: list[tuple[str, dict, str]] = []
+
     try:
-        # ── Tool-use loop ──────────────────────────────────────────────────────
         for _iteration in range(MAX_TOOL_ITERATIONS):
             try:
                 response = await asyncio.wait_for(
-                    client.messages.create(
+                    claude_client.messages.create(
                         model=CLAUDE_MODEL,
-                        max_tokens=4096,
+                        max_tokens=2048,
                         system=system_prompt,
                         messages=messages,
                         tools=TOOL_LIST,
@@ -433,26 +510,13 @@ async def _stream_claude(
                 yield "data: [DONE]\n\n"
                 return
 
-            # Check if Claude wants to use tools
             tool_use_blocks = [b for b in response.content if b.type == "tool_use"]
-
             if not tool_use_blocks:
-                # No tool calls — stream the final text response
-                final_text = "".join(
-                    b.text for b in response.content
-                    if hasattr(b, "text") and b.text
-                )
-                if final_text:
-                    for i in range(0, len(final_text), 8):
-                        yield f"data: {json.dumps(final_text[i:i + 8], ensure_ascii=False)}\n\n"
-                        await asyncio.sleep(0)
-                yield "data: [DONE]\n\n"
-                return
+                break  # Haiku done orchestrating
 
-            # Notify frontend which tools are being called
             yield _tool_status([b.name for b in tool_use_blocks])
 
-            # Add assistant message (with tool use blocks) to history
+            # Append Haiku's assistant turn
             assistant_content = []
             for b in response.content:
                 if b.type == "text":
@@ -466,46 +530,81 @@ async def _stream_claude(
                     })
             messages.append({"role": "assistant", "content": assistant_content})
 
-            # Execute tools and build tool result message
+            # Execute tools, collect results
             tool_results = []
             for b in tool_use_blocks:
                 result = execute_tool(b.name, b.input, store)
+                tool_calls_data.append((b.name, dict(b.input), result))
                 tool_results.append({
                     "type": "tool_result",
                     "tool_use_id": b.id,
                     "content": result,
                 })
             messages.append({"role": "user", "content": tool_results})
-
-            # Small delay between iterations
             await asyncio.sleep(INTER_CALL_DELAY)
-
-        # Max iterations reached — final streaming call without tools
-        try:
-            async with client.messages.stream(
-                model=CLAUDE_MODEL,
-                max_tokens=4096,
-                system=SYSTEM_PROMPT,
-                messages=messages,
-            ) as stream:
-                async for text in stream.text_stream:
-                    yield f"data: {json.dumps(text, ensure_ascii=False)}\n\n"
-        except asyncio.TimeoutError:
-            yield _error_event("응답 시간이 초과되었습니다. 다시 시도해 주세요.")
-        yield "data: [DONE]\n\n"
 
     except Exception as e:
         err = str(e)
-        if "authentication" in err.lower() or "invalid x-api-key" in err.lower() or "api_key" in err.lower():
+        if "authentication" in err.lower() or "invalid x-api-key" in err.lower():
             msg = "Anthropic API 키가 유효하지 않습니다. 서버의 ANTHROPIC_API_KEY를 확인해 주세요."
         elif "rate" in err.lower() or "529" in err or "overloaded" in err.lower():
-            msg = "AI 서버가 일시적으로 혼잡합니다. 잠시 후 다시 시도해 주세요."
-        elif "503" in err or "unavailable" in err.lower() or "high demand" in err.lower():
             msg = "AI 서버가 일시적으로 혼잡합니다. 잠시 후 다시 시도해 주세요."
         else:
             msg = "일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
         yield _error_event(msg)
         yield "data: [DONE]\n\n"
+        return
+
+    # ── Phase 2: Gemini final response (Sonnet fallback on any failure) ────────
+    # Build Gemini contents from history + original message + injected tool results
+    gemini_client = ggenai.Client(api_key=gemini_api_key)
+    contents: list = []
+    for h in history[-MAX_HISTORY_TURNS:]:
+        role = "model" if h.role == "model" else "user"
+        contents.append(gtypes.Content(
+            role=role,
+            parts=[gtypes.Part.from_text(text="\n".join(h.parts))],
+        ))
+    contents.append(gtypes.Content(
+        role="user",
+        parts=[gtypes.Part.from_text(text=message)],
+    ))
+
+    if tool_calls_data:
+        ctx_lines = []
+        for name, inp, result in tool_calls_data:
+            ctx_lines.append(f"[시스템 데이터] {name}({inp}) 결과:\n{result}")
+        ctx_lines.append("\n위 조회 결과를 바탕으로 학생에게 최종 답변을 작성해 주세요.")
+        contents.append(gtypes.Content(
+            role="user",
+            parts=[gtypes.Part.from_text(text="\n\n".join(ctx_lines))],
+        ))
+
+    config_no_tools = gtypes.GenerateContentConfig(system_instruction=system_prompt)
+
+    try:
+        gemini_resp = await _gemini_generate(gemini_client, contents, config_no_tools)
+        text = gemini_resp.text or ""
+        if not text:
+            raise ValueError("empty gemini response")
+        for i in range(0, len(text), 8):
+            yield f"data: {json.dumps(text[i:i + 8], ensure_ascii=False)}\n\n"
+            await asyncio.sleep(0)
+    except Exception:
+        # Sonnet fallback: messages already has full tool-result context from Phase 1
+        try:
+            async with claude_client.messages.stream(
+                model=CLAUDE_SONNET_MODEL,
+                max_tokens=4096,
+                system=system_prompt,
+                messages=messages,
+            ) as stream:
+                async for text_chunk in stream.text_stream:
+                    yield f"data: {json.dumps(text_chunk, ensure_ascii=False)}\n\n"
+        except Exception:
+            yield _error_event("일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.")
+
+    yield "data: [DONE]\n\n"
 
 
 def _is_503(err: Exception) -> bool:
@@ -804,8 +903,8 @@ async def chat(request: Request, body: ChatRequest):
         except Exception:
             pass
 
-    if tier == "paid":
-        gen = _stream_claude(body.message, body.history, system_prompt)
+    if await _get_anthropic_enabled():
+        gen = _stream_hybrid(body.message, body.history, system_prompt)
     else:
         gen = _stream_gemini(body.message, body.history, system_prompt)
     response = StreamingResponse(
