@@ -109,6 +109,15 @@ TOOL_LIST = [
                         "사용자가 '교과전형'을 요청하면 반드시 '학생부교과'를 사용하세요."
                     ),
                 },
+                "process_name_contains": {
+                    "type": "string",
+                    "description": (
+                        "전형 이름 키워드 필터 (부분 일치). 특수전형 이름으로 직접 필터링할 때 사용. "
+                        "예: '농어촌' → 농어촌학생전형만 반환, '기회균형' → 기회균형전형만 반환, "
+                        "'고른기회' → 고른기회전형만 반환. "
+                        "특수전형/기회균형전형 문의 시 반드시 이 파라미터를 사용하세요."
+                    ),
+                },
                 "track": {"type": "string", "description": "계열 필터 (자연, 인문, 의약학 등)"},
                 "region": {
                     "type": "string",
@@ -390,6 +399,7 @@ def _match_by_grade(args: dict, store: AdmissionStore) -> str:
     grade = float(args["grade"])
     grade_type = args["grade_type"]
     process_type = args.get("process_type", "")
+    process_name_contains = args.get("process_name_contains", "")
     track_filter = args.get("track", "")
     region_filter = args.get("region", "")
     university_filter = args.get("university", "")
@@ -404,15 +414,22 @@ def _match_by_grade(args: dict, store: AdmissionStore) -> str:
     }
     score_type = score_type_map.get(grade_type, "등급")
 
+    # When filtering by process name keyword (e.g. 농어촌), widen the grade window
+    # so that reach/stretch results are also included (these 전형 often have lower cuts)
+    fetch_limit = limit * 30 if process_name_contains else limit * 20
+
     results = store.find_results_by_score(
         student_grade=grade,
         score_type=score_type,
         grade_type=grade_type,
-        limit=limit * 20,
+        limit=fetch_limit,
     )
 
     if process_type:
         results = [r for r in results if _matches_process_type(r.get("process_name"), process_type)]
+    if process_name_contains:
+        kw = process_name_contains.strip()
+        results = [r for r in results if kw in (r.get("process_name") or "")]
     if region_filter:
         results = [r for r in results if _in_region(r.get("university", ""), region_filter)]
     if track_filter:
@@ -610,77 +627,156 @@ def _suggest_portfolio(args: dict, store: AdmissionStore) -> str:
     region = args.get("region", "")
     track = args.get("track", "")
 
-    results = store.find_results_by_score(
-        student_grade=grade,
-        score_type="등급",
-        grade_type="내신",
-        limit=500,
-    )
+    # Bucket thresholds relative to student grade (내신: lower = better)
+    # 안정: cut_70 - grade >= 0.5  (student clearly above the 70% cut)
+    # 추천: -0.3 <= cut_70 - grade < 0.5  (student near the cut)
+    # 도전: -0.8 <= cut_70 - grade < -0.3  (student below the cut but close)
+    SAFE_MIN = grade + 0.5
+    TARGET_MIN = grade - 0.3
+    REACH_MIN = grade - 0.8
 
-    if region:
-        results = [r for r in results if _in_region(r.get("university", ""), region)]
-    if track:
-        results = [r for r in results if track in (r.get("track") or "")]
+    def _bucket_query(cut_lo: float, cut_hi: float | None, limit: int = 300) -> list[dict]:
+        """Direct SQL range query: grade_type=내신, cut_70 in [cut_lo, cut_hi)."""
+        sql = """
+            SELECT r.*, d.university, d.campus, d.year, d.track, d.name AS department_name
+            FROM admission_result r
+            JOIN admission_department d ON d.id = r.department_id
+            WHERE r.grade_type = '내신'
+              AND r.cut_70 IS NOT NULL
+              AND r.cut_70 >= ?
+        """
+        params: list = [cut_lo]
+        if cut_hi is not None:
+            sql += " AND r.cut_70 < ?"
+            params.append(cut_hi)
+        sql += " ORDER BY r.cut_70 ASC LIMIT ?"
+        params.append(limit)
+        with store._conn() as conn:
+            rows = conn.execute(sql, params).fetchall()
+        out = []
+        for row in rows:
+            d = dict(row)
+            if isinstance(d.get("attributes"), str):
+                try:
+                    d["attributes"] = json.loads(d["attributes"])
+                except Exception:
+                    d["attributes"] = {}
+            out.append(d)
+        return out
 
-    expanded_region = None
-    if len(results) < 6 and region:
-        all_results = store.find_results_by_score(
-            student_grade=grade, score_type="등급", grade_type="내신", limit=500,
-        )
+    def _apply_filters(pool: list[dict]) -> list[dict]:
+        # Always exclude restricted special 전형s (기회균형, 농어촌, 지역인재 etc.)
+        # These require eligibility conditions most students don't meet.
+        pool = [r for r in pool
+                if not _bur_is_special(r.get("process_name") or "")
+                and not _bur_is_regional(r.get("process_name") or "")]
+        if region:
+            pool = [r for r in pool if _in_region(r.get("university", ""), region)]
         if track:
-            all_results = [r for r in all_results if track in (r.get("track") or "")]
-        results = all_results
-        expanded_region = f"'{region}' 내 데이터 부족 → 전국으로 확장"
+            pool = [r for r in pool if track in (r.get("track") or "")]
+        return pool
 
-    안정, 추천, 도전 = [], [], []
-    seen_unis: set[str] = set()
-
-    for r in results:
+    def _make_entry(r: dict) -> dict:
         uni = r.get("university", "")
-        if uni in seen_unis:
-            continue
-        cut = r.get("cut_70")
-        if cut is None:
-            continue
-        diff = cut - grade
-        process_name = r.get("process_name") or ""
-        process_category = _classify_process_type(process_name)
         meta = _UNI_META.get(uni, {})
-        entry = {
+        process_name = r.get("process_name") or ""
+        cut = r.get("cut_70")
+        return {
             "university": uni,
             "department": r.get("department_name") or r.get("name"),
             "process_name": process_name,
-            "process_category": process_category,
+            "process_category": _classify_process_type(process_name),
             "cut_70": cut,
             "competition_rate": r.get("competition_rate"),
             "result_year": r.get("result_year"),
-            "margin": round(diff, 2),
+            "margin": round((cut or grade) - grade, 2),
             "tier": meta.get("tier"),
             "region": meta.get("region"),
         }
 
-        if diff >= 0.5:
-            안정.append(entry)
-        elif diff >= -0.3:
-            추천.append(entry)
-        elif diff >= -0.8:
-            도전.append(entry)
+    def _rank(pool: list[dict], cut_desc: bool) -> list[dict]:
+        """Sort by tier ASC, then cut_70. cut_desc=True picks hardest-within-tier first."""
+        return sorted(
+            pool,
+            key=lambda r: (
+                _UNI_META.get(r.get("university", ""), {}).get("tier", 5),
+                -(r.get("cut_70") or 0.0) if cut_desc else (r.get("cut_70") or 9.0),
+            ),
+        )
 
-        seen_unis.add(uni)
+    # Fetch each bucket with separate range-bounded queries
+    safe_pool = _apply_filters(_bucket_query(SAFE_MIN, None))
+    target_pool = _apply_filters(_bucket_query(TARGET_MIN, SAFE_MIN))
+    reach_pool = _apply_filters(_bucket_query(REACH_MIN, TARGET_MIN))
 
-    portfolio = {
-        "안정_label": "안정 (상향 대비 합격 확보)",
+    # Region expansion: if buckets are underfilled, retry without region filter
+    expanded_region = None
+    if region and (len(safe_pool) < 2 or len(target_pool) < 2 or len(reach_pool) < 2):
+        def _no_region_filter(pool):
+            return [r for r in pool
+                    if not _bur_is_special(r.get("process_name") or "")
+                    and not _bur_is_regional(r.get("process_name") or "")
+                    and (not track or track in (r.get("track") or ""))]
+        if len(safe_pool) < 2:
+            safe_pool = _no_region_filter(_bucket_query(SAFE_MIN, None))
+        if len(target_pool) < 2:
+            target_pool = _no_region_filter(_bucket_query(TARGET_MIN, SAFE_MIN))
+        if len(reach_pool) < 2:
+            reach_pool = _no_region_filter(_bucket_query(REACH_MIN, TARGET_MIN))
+        expanded_region = f"'{region}' 내 데이터 부족 → 전국으로 확장"
+
+    # 안정: prefer easiest safe (cut just above threshold) → tier ASC, cut ASC
+    # 추천: prefer hardest target (cut closest to safe threshold) → tier ASC, cut DESC
+    # 도전: prefer easiest reach (cut closest to student grade) → tier ASC, cut DESC
+    safe_pool = _rank(safe_pool, cut_desc=False)
+    target_pool = _rank(target_pool, cut_desc=True)
+    reach_pool = _rank(reach_pool, cut_desc=True)
+
+    # Pick 2 per bucket; deduplicate universities globally across all buckets
+    used_unis: set[str] = set()
+
+    def _pick(pool: list[dict], n: int) -> list[dict]:
+        out: list[dict] = []
+        for r in pool:
+            if len(out) >= n:
+                break
+            uni = r.get("university", "")
+            if not uni or uni in used_unis:
+                continue
+            used_unis.add(uni)
+            out.append(_make_entry(r))
+        return out
+
+    selected_target = _pick(target_pool, 2)
+    selected_safe = _pick(safe_pool, 2)
+    selected_reach = _pick(reach_pool, 2)
+
+    total = len(selected_safe) + len(selected_target) + len(selected_reach)
+    portfolio: dict = {
+        "안정_label": "안정 (합격 가능성 높음)",
         "추천_label": "적정 (핵심 승부 라인)",
-        "도전_label": "상향 (역전 도전)",
-        "안정": 안정[:2],
-        "추천": 추천[:2],
-        "도전": 도전[:2],
+        "도전_label": "상향 (도전, 역전 가능)",
+        "안정": selected_safe,
+        "추천": selected_target,
+        "도전": selected_reach,
         "student_grade": grade,
-        "total_cards": len(안정[:2]) + len(추천[:2]) + len(도전[:2]),
+        "total_cards": total,
         "portfolio_format": "수시 6장 전략: 상향 2장(도전) + 적정 2장(추천) + 안정 2장(안정)",
     }
     if expanded_region:
         portfolio["note_region_expanded"] = expanded_region
+    if len(selected_safe) < 2:
+        portfolio["warning_안정"] = (
+            f"안정권 결과 {len(selected_safe)}개만 찾음 (2개 요청) — "
+            "지역 조건을 완화하거나 성적 기준을 조정하세요"
+        )
+    if len(selected_target) < 2:
+        portfolio["warning_추천"] = f"추천권 결과 {len(selected_target)}개만 찾음 (2개 요청)"
+    if len(selected_reach) < 2:
+        portfolio["warning_도전"] = (
+            f"도전권 결과 {len(selected_reach)}개만 찾음 (2개 요청) — "
+            "해당 성적 구간의 입시결과 데이터가 부족합니다"
+        )
 
     return json.dumps(portfolio, ensure_ascii=False)
 
@@ -833,7 +929,7 @@ _SPECIAL_WHITELIST = (
     "기초의학", "기초과학", "기초교육",
     "특성화대학", "특성화학부", "특성화전공", "특성화사업",
 )
-_REGIONAL_MARKERS = ("지역인재", "지역우선", "지역균형인재")
+_REGIONAL_MARKERS = ("지역인재", "지역우선", "지역균형인재", "교과지역", "종합지역")
 
 
 def _bur_is_special(proc: str) -> bool:
