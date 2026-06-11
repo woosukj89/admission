@@ -408,18 +408,10 @@ def _status(msg: str) -> str:
 async def _get_anthropic_enabled() -> bool:
     """Read `anthropic_enabled` from Vercel Edge Config with 60s cache.
 
-    Local override: set ANTHROPIC_ENABLED=true/false in .env to bypass Edge Config.
     Returns False when EDGE_CONFIG is unset (local dev → Option 2 default).
     """
     import time
     import urllib.request
-
-    # Local env var overrides Edge Config (useful when credits are low / rate-limited)
-    local_override = os.environ.get("ANTHROPIC_ENABLED", "").strip().lower()
-    if local_override in ("true", "1", "yes"):
-        return True
-    if local_override in ("false", "0", "no"):
-        return False
 
     key = "anthropic_enabled"
     now = time.monotonic()
