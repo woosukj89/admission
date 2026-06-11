@@ -408,10 +408,18 @@ def _status(msg: str) -> str:
 async def _get_anthropic_enabled() -> bool:
     """Read `anthropic_enabled` from Vercel Edge Config with 60s cache.
 
+    Local override: set ANTHROPIC_ENABLED=true/false in .env to bypass Edge Config.
     Returns False when EDGE_CONFIG is unset (local dev → Option 2 default).
     """
     import time
     import urllib.request
+
+    # Local env var overrides Edge Config (useful when credits are low / rate-limited)
+    local_override = os.environ.get("ANTHROPIC_ENABLED", "").strip().lower()
+    if local_override in ("true", "1", "yes"):
+        return True
+    if local_override in ("false", "0", "no"):
+        return False
 
     key = "anthropic_enabled"
     now = time.monotonic()
@@ -493,21 +501,30 @@ async def _stream_hybrid(
 
     try:
         for _iteration in range(MAX_TOOL_ITERATIONS):
-            try:
-                response = await asyncio.wait_for(
-                    claude_client.messages.create(
-                        model=CLAUDE_MODEL,
-                        max_tokens=2048,
-                        system=system_prompt,
-                        messages=messages,
-                        tools=TOOL_LIST,
-                    ),
-                    timeout=CLAUDE_TIMEOUT,
-                )
-            except asyncio.TimeoutError:
-                yield _error_event("응답 시간이 초과되었습니다. 다시 시도해 주세요.")
-                yield "data: [DONE]\n\n"
-                return
+            response = None
+            for _attempt, _retry_delay in enumerate([0.0, 8.0, 20.0]):
+                if _retry_delay:
+                    await asyncio.sleep(_retry_delay)
+                try:
+                    response = await asyncio.wait_for(
+                        claude_client.messages.create(
+                            model=CLAUDE_MODEL,
+                            max_tokens=2048,
+                            system=system_prompt,
+                            messages=messages,
+                            tools=TOOL_LIST,
+                        ),
+                        timeout=CLAUDE_TIMEOUT,
+                    )
+                    break  # success
+                except asyncio.TimeoutError:
+                    yield _error_event("응답 시간이 초과되었습니다. 다시 시도해 주세요.")
+                    yield "data: [DONE]\n\n"
+                    return
+                except anthropic.RateLimitError:
+                    if _attempt < 2:
+                        continue  # retry after delay
+                    raise  # give up after 3 attempts
 
             tool_use_blocks = [b for b in response.content if b.type == "tool_use"]
             if not tool_use_blocks:
@@ -546,6 +563,8 @@ async def _stream_hybrid(
         err = str(e)
         if "authentication" in err.lower() or "invalid x-api-key" in err.lower():
             msg = "Anthropic API 키가 유효하지 않습니다. 서버의 ANTHROPIC_API_KEY를 확인해 주세요."
+        elif isinstance(e, anthropic.RateLimitError) or "429" in err:
+            msg = "Anthropic API 요청 한도에 도달했습니다. 잠시 후 다시 시도하거나 ANTHROPIC_ENABLED=false 로 Gemini 전용 모드로 전환하세요."
         elif "rate" in err.lower() or "529" in err or "overloaded" in err.lower():
             msg = "AI 서버가 일시적으로 혼잡합니다. 잠시 후 다시 시도해 주세요."
         else:
