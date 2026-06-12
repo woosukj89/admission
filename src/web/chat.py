@@ -322,6 +322,33 @@ _PLACEHOLDER_PATTERN = re.compile(
     r'잠시만|기다려\s*주세요|찾아드릴게요|찾아보겠|알겠습니다.{0,30}전형|추천해\s*드릴게요'
 )
 
+# Tool names the model might emit as JSON keys (fake tool-call JSON blobs)
+_KNOWN_TOOLS = (
+    "match_by_grade", "search_programs", "match_by_subjects", "suggest_portfolio",
+    "get_process_detail", "compare_universities", "list_universities", "search_fulltext",
+    "check_university_feasibility", "list_departments", "browse_university_results",
+)
+_FAKE_TOOL_JSON_RE = re.compile(
+    r'^\s*\{\s*"(?:' + '|'.join(_KNOWN_TOOLS) + r')"\s*:',
+    re.DOTALL,
+)
+
+
+def _strip_tool_markup(text: str) -> str:
+    """Extract the real answer from text that contains fake <tool_call>/<tool_response> blocks.
+
+    Gemini sometimes emits these as plain text instead of using the function-calling API.
+    The real user-facing answer (if any) appears after the last </tool_response> tag.
+    """
+    last_end = text.rfind('</tool_response>')
+    if last_end != -1:
+        text = text[last_end + len('</tool_response>'):]
+    # Remove any stray blocks that weren't caught above
+    text = re.sub(r'<tool_call>.*?</tool_call>', '', text, flags=re.DOTALL)
+    text = re.sub(r'<tool_response>.*?</tool_response>', '', text, flags=re.DOTALL)
+    text = re.sub(r'\n{3,}', '\n\n', text)
+    return text.strip()
+
 # Pre-routing: detect "browse a university's results" intent without student grade
 _BROWSE_TRIGGER_RE = re.compile(
     r'(?:낮은|높은)[\s]*(?:순서?|정렬)|'     # "낮은 순서", "낮은 정렬", "높은 순"
@@ -729,10 +756,24 @@ async def _stream_gemini(
                     final_text = response.text or ""
                 except (ValueError, AttributeError):
                     final_text = ""
-                # Pattern-based nudge: if the model returned a placeholder response
-                # ("잠시만 기다려 주세요", "찾아드릴게요" etc.) with no tool calls,
-                # inject a directive and retry rather than streaming the placeholder.
-                if _iteration == 0 and final_text and _PLACEHOLDER_PATTERN.search(final_text) and "\n\n" not in final_text:
+
+                # Detect fake tool-call output (model emitted markup as plain text)
+                has_tool_markup = '<tool_call>' in final_text or '<tool_response>' in final_text
+                is_tool_json = bool(_FAKE_TOOL_JSON_RE.search(final_text))
+
+                if has_tool_markup:
+                    # Extract real answer (text after last </tool_response>)
+                    final_text = _strip_tool_markup(final_text)
+                elif is_tool_json:
+                    final_text = ""  # entire output was a tool-call blob, no usable answer
+
+                # Retry nudge on first iteration: placeholder text, OR fake tool output
+                # with nothing useful extracted
+                should_retry = _iteration == 0 and (
+                    (final_text and _PLACEHOLDER_PATTERN.search(final_text) and "\n\n" not in final_text)
+                    or (not final_text and (has_tool_markup or is_tool_json))
+                )
+                if should_retry:
                     contents.append(gtypes.Content(role="model", parts=parts))
                     contents.append(gtypes.Content(
                         role="user",
@@ -742,6 +783,7 @@ async def _stream_gemini(
                     ))
                     await asyncio.sleep(INTER_CALL_DELAY)
                     continue  # retry the loop
+
                 # No tool calls — stream final text
                 if final_text:
                     _trace(rid, "llm_start", t0, model=GEMINI_MODEL)
