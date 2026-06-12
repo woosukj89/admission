@@ -597,6 +597,7 @@ async def _stream_hybrid(
     try:
         gemini_resp = await _gemini_generate(gemini_client, contents, config_no_tools)
         text = gemini_resp.text or ""
+        text = _strip_tool_markup(text) if ('<tool_call>' in text or '<tool_response>' in text) else text
         if not text:
             raise ValueError("empty gemini response")
         for i in range(0, len(text), 8):
