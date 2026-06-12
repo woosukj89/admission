@@ -33,7 +33,17 @@ USERS_DB = ROOT / "data" / "users.db"
 
 
 def pg_conn():
-    return psycopg2.connect(DATABASE_URL)
+    from urllib.parse import urlparse, unquote
+    u = urlparse(DATABASE_URL)
+    return psycopg2.connect(
+        host=u.hostname,
+        port=u.port or 5432,
+        user=unquote(u.username),
+        password=unquote(u.password),
+        dbname=u.path.lstrip("/"),
+        sslmode="require",
+        options="-c default_transaction_read_only=off",
+    )
 
 
 def create_tables(cur):
@@ -168,6 +178,18 @@ def create_tables(cur):
             created_at  TEXT NOT NULL
         )
     """)
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS survey_responses (
+            id          TEXT PRIMARY KEY,
+            user_email  TEXT,
+            anon_id     TEXT,
+            rating      INTEGER,
+            improvement TEXT,
+            other       TEXT,
+            created_at  TEXT NOT NULL
+        )
+    """)
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_survey_created ON survey_responses(created_at)")
     print("  Tables created.")
 
 
@@ -176,7 +198,7 @@ def migrate_admission(cur):
         print(f"  WARNING: {ADMISSION_DB} not found, skipping admission data.")
         return
     src = sqlite3.connect(str(ADMISSION_DB))
-    src.row_factory = sqlite3.Row
+    src.row_factory = lambda c, r: {d[0]: r[i] for i, d in enumerate(c.description)}
 
     print("Migrating admission_department...")
     rows = src.execute("SELECT * FROM admission_department").fetchall()
@@ -186,8 +208,8 @@ def migrate_admission(cur):
                 (id, year, university, campus, track, name, attributes)
             VALUES %s ON CONFLICT DO NOTHING
         """, [
-            (r["id"], r["year"], r["university"] or "",
-             r["campus"] or "", r["track"] or "", r["name"] or "",
+            (r["id"], r["year"], r.get("university") or "",
+             r.get("campus") or "", r.get("track") or "", r.get("name") or "",
              r.get("attributes") or "{}") for r in rows
         ])
         max_id = max(r["id"] for r in rows)
@@ -197,22 +219,19 @@ def migrate_admission(cur):
     print("Migrating admission_process...")
     procs = src.execute("SELECT * FROM admission_process").fetchall()
     if procs:
+        # Build search_vector inline during insert to avoid a slow bulk UPDATE
         psycopg2.extras.execute_values(cur, """
             INSERT INTO admission_process
-                (id, department_id, process_name, process_type, admission_type, quota, content, attributes)
+                (id, department_id, process_name, process_type, admission_type, quota, content, attributes, search_vector)
             VALUES %s ON CONFLICT DO NOTHING
         """, [
             (p["id"], p["department_id"],
-             p["process_name"], p["process_type"], p["admission_type"],
-             p["quota"], p["content"], p.get("attributes") or "{}") for p in procs
-        ])
+             p["process_name"], p.get("process_type"), p.get("admission_type"),
+             p.get("quota"), p.get("content"), p.get("attributes") or "{}",
+             (p.get("process_name") or "") + " " + (p.get("content") or "")) for p in procs
+        ], template="(%s,%s,%s,%s,%s,%s,%s,%s,to_tsvector('simple',%s))")
         max_id = max(p["id"] for p in procs)
         cur.execute(f"SELECT setval(pg_get_serial_sequence('admission_process','id'), {max_id})")
-        # Build tsvector for full-text search
-        cur.execute("""
-            UPDATE admission_process SET search_vector =
-                to_tsvector('simple', COALESCE(process_name,'') || ' ' || COALESCE(content,''))
-        """)
     print(f"  {len(procs)} processes migrated.")
 
     print("Migrating admission_result...")
@@ -227,10 +246,10 @@ def migrate_admission(cur):
         """, [
             (r["id"], r["department_id"],
              r["result_year"], r["process_name"], r.get("process_id"),
-             r["admission_type"], r["score_type"], r.get("grade_type"),
-             r["competition_rate"], r["average_score"],
-             r["cut_50"], r["cut_60"], r["cut_70"],
-             r["cut_80"], r["cut_85"], r["cut_90"],
+             r.get("admission_type"), r.get("score_type"), r.get("grade_type"),
+             r.get("competition_rate"), r.get("average_score"),
+             r.get("cut_50"), r.get("cut_60"), r.get("cut_70"),
+             r.get("cut_80"), r.get("cut_85"), r.get("cut_90"),
              r.get("content"), r.get("attributes") or "{}") for r in results
         ])
         max_id = max(r["id"] for r in results)
@@ -244,7 +263,7 @@ def migrate_users(cur):
         print(f"  WARNING: {USERS_DB} not found, skipping users.")
         return
     src = sqlite3.connect(str(USERS_DB))
-    src.row_factory = sqlite3.Row
+    src.row_factory = lambda c, r: {d[0]: r[i] for i, d in enumerate(c.description)}
 
     print("Migrating users...")
     rows = src.execute("SELECT * FROM users").fetchall()
@@ -265,7 +284,9 @@ def main():
     cur = conn.cursor()
     try:
         create_tables(cur)
+        conn.commit()
         migrate_admission(cur)
+        conn.commit()
         migrate_users(cur)
         conn.commit()
         print("\nMigration complete!")

@@ -26,6 +26,8 @@ const state = {
   loading: false,
   adConfig: null,          // {adsense_pub_id, adsense_rewarded_slot, ad_credits_max}
   pendingMessage: null,    // message to retry after ad reward
+  questionCount: 0,        // questions asked this session (for survey trigger)
+  surveySeen: false,       // whether survey has been shown this session
 };
 
 // ── Initialization ────────────────────────────────────────────────────────────
@@ -39,6 +41,9 @@ async function init() {
     if (cfgResp.ok) {
       state.adConfig = await cfgResp.json();
       _initAdSense();
+      if (state.adConfig.show_beta_banner && !localStorage.getItem('beta_dismissed')) {
+        openBetaBanner();
+      }
     }
     if (meResp.ok) {
       state.user = await meResp.json();
@@ -708,6 +713,11 @@ async function sendMessage() {
     if (fullText) {
       state.history.push({ role: 'model', parts: [fullText] });
       _saveHistory();
+      state.questionCount++;
+      if (state.questionCount === 2 && state.adConfig?.show_survey && !state.surveySeen) {
+        state.surveySeen = true;
+        setTimeout(openSurveyModal, 1500);
+      }
     } else if (!errorHandled) {
       _showRetryBubble(aiBubble, text, '응답을 받지 못했습니다. 잠시 후 다시 시도해 주세요.');
     }
@@ -851,6 +861,42 @@ function handleKeydown(event) {
     event.preventDefault();
     sendMessage();
   }
+}
+
+// ── Beta Banner ───────────────────────────────────────────────────────────────
+
+function openBetaBanner() {
+  document.getElementById('beta-banner-modal').classList.remove('hidden');
+}
+
+function closeBetaBanner() {
+  document.getElementById('beta-banner-modal').classList.add('hidden');
+  localStorage.setItem('beta_dismissed', '1');
+}
+
+// ── Survey Modal ──────────────────────────────────────────────────────────────
+
+function openSurveyModal() {
+  document.getElementById('survey-modal').classList.remove('hidden');
+}
+
+function closeSurveyModal() {
+  document.getElementById('survey-modal').classList.add('hidden');
+}
+
+async function submitSurvey() {
+  const ratingEl = document.querySelector('input[name="survey-rating"]:checked');
+  const rating = ratingEl ? parseInt(ratingEl.value) : null;
+  const improvement = document.getElementById('survey-improvement').value.trim();
+  const other = document.getElementById('survey-other').value.trim();
+  try {
+    await fetch('/api/survey', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ rating, improvement, other }),
+    });
+  } catch {}
+  closeSurveyModal();
 }
 
 // ── Bootstrap ─────────────────────────────────────────────────────────────────

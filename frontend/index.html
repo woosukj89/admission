@@ -391,6 +391,73 @@
     </div>
   </div>
 
+  <!-- Beta Banner Modal -->
+  <div id="beta-banner-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 relative">
+      <button onclick="closeBetaBanner()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">✕</button>
+      <div class="text-4xl text-center mb-3">🐋</div>
+      <h2 class="text-xl font-bold text-gray-800 text-center mb-3">베타 서비스 안내</h2>
+      <p class="text-gray-600 text-sm mb-3 leading-relaxed">이 서비스는 현재 <strong>베타 테스트</strong> 단계입니다. 일부 기능이 완벽하지 않을 수 있으며, AI 응답에 다소 시간이 걸릴 수 있습니다.</p>
+      <p class="text-gray-600 text-sm mb-5 leading-relaxed">모든 데이터는 대학교 또는 교육부에서 제공하는 공식 자료를 바탕으로 구성되었습니다. 그러나 일부 정보가 누락되거나 실제와 다를 수 있으므로, 최종 입시 결정 시 반드시 해당 대학 공식 홈페이지에서 직접 확인하시기 바랍니다.</p>
+      <button onclick="closeBetaBanner()"
+              class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-xl transition">
+        확인했습니다
+      </button>
+    </div>
+  </div>
+
+  <!-- Survey Modal -->
+  <div id="survey-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 relative max-h-[90vh] overflow-y-auto">
+      <button onclick="closeSurveyModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">✕</button>
+      <h2 class="text-lg font-bold text-gray-800 mb-1">서비스 만족도 조사</h2>
+      <p class="text-gray-500 text-xs mb-4">더 나은 서비스를 위해 소중한 의견을 들려주세요.</p>
+
+      <label class="block text-sm font-semibold text-gray-700 mb-2">AI 답변에 얼마나 만족하셨나요?</label>
+      <div class="flex items-center justify-between mb-5">
+        <span class="text-xs text-gray-400">매우<br>불만족</span>
+        <div class="flex gap-4">
+          <label class="flex flex-col items-center cursor-pointer gap-1">
+            <input type="radio" name="survey-rating" value="1">
+            <span class="text-xs text-gray-600">1</span>
+          </label>
+          <label class="flex flex-col items-center cursor-pointer gap-1">
+            <input type="radio" name="survey-rating" value="2">
+            <span class="text-xs text-gray-600">2</span>
+          </label>
+          <label class="flex flex-col items-center cursor-pointer gap-1">
+            <input type="radio" name="survey-rating" value="3">
+            <span class="text-xs text-gray-600">3</span>
+          </label>
+          <label class="flex flex-col items-center cursor-pointer gap-1">
+            <input type="radio" name="survey-rating" value="4">
+            <span class="text-xs text-gray-600">4</span>
+          </label>
+          <label class="flex flex-col items-center cursor-pointer gap-1">
+            <input type="radio" name="survey-rating" value="5">
+            <span class="text-xs text-gray-600">5</span>
+          </label>
+        </div>
+        <span class="text-xs text-gray-400">매우<br>만족</span>
+      </div>
+
+      <label class="block text-sm font-semibold text-gray-700 mb-1">개선이 필요한 점이 있다면 알려주세요</label>
+      <textarea id="survey-improvement" rows="3"
+                placeholder="예: 특정 대학 데이터가 없어요, 답변이 너무 짧아요..."
+                class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"></textarea>
+
+      <label class="block text-sm font-semibold text-gray-700 mb-1">기타 의견이나 바라는 점이 있으신가요?</label>
+      <textarea id="survey-other" rows="3"
+                placeholder="자유롭게 작성해 주세요..."
+                class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm mb-5 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"></textarea>
+
+      <button onclick="submitSurvey()"
+              class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-xl transition">
+        의견 보내기
+      </button>
+    </div>
+  </div>
+
   <script src="/app.js"></script>
 </body>
 </html>

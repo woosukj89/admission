@@ -236,6 +236,7 @@ _IS_DEV = APP_BASE_URL.startswith("http://localhost") or APP_BASE_URL.startswith
 async def public_config():
     """Return public frontend configuration (AdSense IDs, feature flags)."""
     from src.storage.user_store import get_user_store
+    from .edge_config import get_edge_config
     store = get_user_store()
     daily_free_limit = int(store.get_config("daily_free_limit", "5"))
     return JSONResponse({
@@ -246,6 +247,8 @@ async def public_config():
         "payments_enabled": PAYMENTS_ENABLED,
         "daily_free_limit": daily_free_limit,
         "dev_mode": _IS_DEV,
+        "show_beta_banner": bool(await get_edge_config("show_beta_banner")),
+        "show_survey": bool(await get_edge_config("show_survey")),
     })
 
 

@@ -64,6 +64,17 @@ class AnalyticsStore:
                     signups_with_profile INTEGER DEFAULT 0
                 )
             """)
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS survey_responses (
+                    id          TEXT PRIMARY KEY,
+                    user_email  TEXT,
+                    anon_id     TEXT,
+                    rating      INTEGER,
+                    improvement TEXT,
+                    other       TEXT,
+                    created_at  TEXT NOT NULL
+                )
+            """)
             # Indexes for common queries
             for ddl in [
                 "CREATE INDEX IF NOT EXISTS idx_conv_email ON conversations(user_email)",
@@ -71,6 +82,7 @@ class AnalyticsStore:
                 "CREATE INDEX IF NOT EXISTS idx_msg_conv ON messages(conversation_id)",
                 "CREATE INDEX IF NOT EXISTS idx_api_email ON api_calls(user_email)",
                 "CREATE INDEX IF NOT EXISTS idx_api_created ON api_calls(created_at)",
+                "CREATE INDEX IF NOT EXISTS idx_survey_created ON survey_responses(created_at)",
             ]:
                 conn.execute(ddl)
 
@@ -179,6 +191,23 @@ class AnalyticsStore:
                 GROUP BY day ORDER BY day DESC LIMIT ?
             """, (days,)).fetchall()
         return [dict(r) for r in rows]
+
+    def save_survey_response(
+        self,
+        user_email: str | None,
+        anon_id: str | None,
+        rating: int | None,
+        improvement: str,
+        other: str,
+    ) -> None:
+        now = datetime.now(timezone.utc).isoformat()
+        with self._conn() as conn:
+            conn.execute(
+                """INSERT INTO survey_responses
+                   (id, user_email, anon_id, rating, improvement, other, created_at)
+                   VALUES (?, ?, ?, ?, ?, ?, ?)""",
+                (str(uuid.uuid4()), user_email, anon_id, rating, improvement, other, now),
+            )
 
 
 _instance: AnalyticsStore | None = None

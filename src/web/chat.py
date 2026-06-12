@@ -5,8 +5,10 @@ import asyncio
 import json
 import os
 import re
+import time
 from pathlib import Path
 from typing import AsyncGenerator
+from uuid import uuid4
 
 import anthropic
 from fastapi import APIRouter, HTTPException, Request
@@ -16,6 +18,7 @@ from pydantic import BaseModel
 from src.storage.admission_store import AdmissionStore
 from .rate_limit import check_and_increment, get_usage
 from .session import get_optional_user
+from .edge_config import get_edge_config
 from .tools import TOOL_LIST, execute_tool
 
 router = APIRouter()
@@ -51,9 +54,6 @@ _GEMINI_MAX_RETRIES = 3
 _GEMINI_RETRY_DELAYS = [1.0, 2.0, 4.0]  # exponential backoff (seconds)
 _PROJECT_ROOT = Path(__file__).parent.parent.parent
 
-# Edge Config cache: key → (value, monotonic_timestamp)
-_edge_config_cache: dict[str, tuple[object, float]] = {}
-_EDGE_CONFIG_TTL = 60.0  # seconds
 
 
 def _build_gemini_tools():
@@ -406,50 +406,22 @@ def _status(msg: str) -> str:
 
 
 async def _get_anthropic_enabled() -> bool:
-    """Read `anthropic_enabled` from Vercel Edge Config with 60s cache.
+    return bool(await get_edge_config("anthropic_enabled"))
 
-    Returns False when EDGE_CONFIG is unset (local dev → Option 2 default).
-    """
-    import time
-    import urllib.request
 
-    key = "anthropic_enabled"
-    now = time.monotonic()
-    if key in _edge_config_cache:
-        val, ts = _edge_config_cache[key]
-        if now - ts < _EDGE_CONFIG_TTL:
-            return bool(val)
-
-    edge_config = os.environ.get("EDGE_CONFIG", "").strip()
-    if not edge_config:
-        return False
-
-    m = re.match(r"(https://edge-config\.vercel\.com/[^?]+)\?token=(.+)", edge_config)
-    if not m:
-        return False
-    base_url, token = m.group(1), m.group(2)
-
-    try:
-        def _fetch() -> object:
-            req = urllib.request.Request(
-                f"{base_url}/item/{key}",
-                headers={"Authorization": f"Bearer {token}"},
-            )
-            with urllib.request.urlopen(req, timeout=5) as resp:
-                return json.loads(resp.read())
-        val = await asyncio.to_thread(_fetch)
-        result = bool(val)
-    except Exception:
-        result = False
-
-    _edge_config_cache[key] = (result, now)
-    return result
+def _trace(rid: str, event: str, t0: float, **kwargs) -> None:
+    elapsed = round((time.monotonic() - t0) * 1000)
+    data = {"rid": rid, "event": event, "t": elapsed, **kwargs}
+    print(f"[TRACE] {json.dumps(data, ensure_ascii=False)}", flush=True)
 
 
 async def _stream_hybrid(
     message: str, history: list[ChatMessage], system_prompt: str = SYSTEM_PROMPT
 ) -> AsyncGenerator[str, None]:
     """Option 1: Haiku orchestrates tool calls, Gemini generates final response (Sonnet fallback)."""
+    rid = uuid4().hex[:12]
+    t0 = time.monotonic()
+    _trace(rid, "start", t0, mode="hybrid")
     yield _status("답변을 준비하고 있어요...")
 
     api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
@@ -541,7 +513,9 @@ async def _stream_hybrid(
             # Execute tools, collect results
             tool_results = []
             for b in tool_use_blocks:
+                _trace(rid, "tool_call", t0, tool=b.name)
                 result = execute_tool(b.name, b.input, store)
+                _trace(rid, "tool_done", t0, tool=b.name)
                 tool_calls_data.append((b.name, dict(b.input), result))
                 tool_results.append({
                     "type": "tool_result",
@@ -592,6 +566,7 @@ async def _stream_hybrid(
 
     config_no_tools = gtypes.GenerateContentConfig(system_instruction=system_prompt)
 
+    _trace(rid, "llm_start", t0, model=GEMINI_MODEL, tools=[t[0] for t in tool_calls_data])
     try:
         gemini_resp = await _gemini_generate(gemini_client, contents, config_no_tools)
         text = gemini_resp.text or ""
@@ -603,6 +578,7 @@ async def _stream_hybrid(
     except Exception:
         # Sonnet fallback: messages already has full tool-result context from Phase 1
         try:
+            _trace(rid, "llm_start", t0, model=CLAUDE_SONNET_MODEL, fallback=True)
             async with claude_client.messages.stream(
                 model=CLAUDE_SONNET_MODEL,
                 max_tokens=4096,
@@ -614,6 +590,7 @@ async def _stream_hybrid(
         except Exception:
             yield _error_event("일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.")
 
+    _trace(rid, "done", t0, total_ms=round((time.monotonic() - t0) * 1000), tools=[t[0] for t in tool_calls_data])
     yield "data: [DONE]\n\n"
 
 
@@ -652,6 +629,10 @@ async def _stream_gemini(
     message: str, history: list[ChatMessage], system_prompt: str = SYSTEM_PROMPT
 ) -> AsyncGenerator[str, None]:
     """Run Gemini tool-use loop then stream final text response via SSE (google-genai SDK)."""
+    rid = uuid4().hex[:12]
+    t0 = time.monotonic()
+    tools_used: list[str] = []
+    _trace(rid, "start", t0, mode="gemini")
     yield _status("답변을 준비하고 있어요...")
 
     api_key = os.environ.get("GEMINI_API_KEY", "").strip()
@@ -763,12 +744,14 @@ async def _stream_gemini(
                     continue  # retry the loop
                 # No tool calls — stream final text
                 if final_text:
+                    _trace(rid, "llm_start", t0, model=GEMINI_MODEL)
                     for i in range(0, len(final_text), 8):
                         yield f"data: {json.dumps(final_text[i:i + 8], ensure_ascii=False)}\n\n"
                         await asyncio.sleep(0)
                 elif tools_called:
                     # Empty text after tool calls — fall through to summary call
                     break
+                _trace(rid, "done", t0, total_ms=round((time.monotonic() - t0) * 1000), tools=tools_used)
                 yield "data: [DONE]\n\n"
                 return
 
@@ -782,7 +765,10 @@ async def _stream_gemini(
             fn_response_parts = []
             for fc in fn_calls:
                 args = dict(fc.args) if fc.args else {}
+                _trace(rid, "tool_call", t0, tool=fc.name)
                 result_str = execute_tool(fc.name, args, store)
+                _trace(rid, "tool_done", t0, tool=fc.name)
+                tools_used.append(fc.name)
                 try:
                     parsed = json.loads(result_str)
                     result_dict = parsed if isinstance(parsed, dict) else {"results": parsed}
@@ -805,6 +791,7 @@ async def _stream_gemini(
             final_contents = contents + [gtypes.Content(role="user", parts=[
                 gtypes.Part.from_text(text="지금까지의 조회 결과를 바탕으로 학생에게 최종 답변을 작성해 주세요.")
             ])]
+            _trace(rid, "llm_start", t0, model=GEMINI_MODEL)
             final_resp = await _gemini_generate(client, final_contents, config_no_tools)
             text = final_resp.text or ""
             if not text:
@@ -815,6 +802,7 @@ async def _stream_gemini(
                     await asyncio.sleep(0)
         except asyncio.TimeoutError:
             yield _error_event("응답 시간이 초과되었습니다. 다시 시도해 주세요.")
+        _trace(rid, "done", t0, total_ms=round((time.monotonic() - t0) * 1000), tools=tools_used)
         yield "data: [DONE]\n\n"
 
     except Exception as e:
@@ -926,6 +914,29 @@ async def chat(request: Request, body: ChatRequest):
     if anon_id and anon_id != request.cookies.get(_ANON_COOKIE):
         response.set_cookie(_ANON_COOKIE, anon_id, max_age=365 * 24 * 3600, httponly=True, samesite="lax")
     return response
+
+
+class SurveyRequest(BaseModel):
+    rating: int | None = None   # 1–5, None if skipped
+    improvement: str = ""
+    other: str = ""
+
+
+@router.post("/api/survey")
+async def submit_survey(request: Request, body: SurveyRequest):
+    """Save a survey response (anonymous or logged-in)."""
+    user = get_optional_user(request)
+    anon_id = request.cookies.get(_ANON_COOKIE)
+    from src.storage.analytics_store import get_analytics_store
+    analytics = get_analytics_store()
+    analytics.save_survey_response(
+        user_email=user.get("email") if user else None,
+        anon_id=anon_id or None,
+        rating=body.rating,
+        improvement=body.improvement.strip()[:2000],
+        other=body.other.strip()[:2000],
+    )
+    return {"ok": True}
 
 
 @router.get("/api/usage")
